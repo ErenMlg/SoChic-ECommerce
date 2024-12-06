@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/CardViewStyle"
+    android:layout_width="match_parent"
+    android:layout_height="350dp"
+    android:layout_margin="8dp"
+    app:cardElevation="4dp"
+    app:cardCornerRadius="6dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/ivItemPhoto"
+            android:layout_width="0dp"
+            android:layout_height="220dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:elevation="3dp"
+            android:background="?android:windowBackground"
+            android:scaleType="centerInside"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Small"
+            tools:srcCompat="@drawable/kolye" />
+
+        <TextView
+            android:id="@+id/txtItemName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:ellipsize="end"
+            android:fontFamily="@font/poppins_regular"
+            android:maxLines="3"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/ivItemPhoto"
+            app:layout_constraintTop_toBottomOf="@+id/ivItemPhoto"
+            tools:text="Şans Yoncası 18 Ayar Sarı Altın Kaplama 44 Cm Gümüş Minimal Kolye Yt1" />
+
+        <TextView
+            android:id="@+id/txtItemDiscountedPrice"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:fontFamily="@font/poppins_bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/txtItemPrice"
+            app:layout_constraintStart_toStartOf="@+id/txtItemName"
+            tools:text="1320.00 TL" />
+
+        <TextView
+            android:id="@+id/txtItemPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_light"
+            android:textColor="#B4B4B4"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@+id/txtItemDiscountedPrice"
+            app:layout_constraintEnd_toEndOf="@+id/txtItemName"
+            app:layout_constraintTop_toTopOf="@+id/txtItemDiscountedPrice"
+            tools:text="1040 TL" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

@@ -1,0 +1,30 @@
+query ProductDetail($id: String!) {
+    product(id: $id) {
+        id
+        name
+        fullDescription
+        productPrice {
+            price
+            oldPrice
+        }
+        isFreeShipping
+        productSlicers {
+            variants {
+                productId
+                inStock
+                slicerAttributes {
+                    attributeName
+                    attributeValue
+                }
+            }
+        }
+        productSpecifications {
+            specificationAttributeName
+            valueRaw
+            id
+        }
+        pictureModels {
+            imageUrl
+        }
+    }
+}

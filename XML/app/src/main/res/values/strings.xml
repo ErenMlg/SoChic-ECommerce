@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">SoChic...</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="welcome_sochic">So CHIC\'e hoş geldiniz!</string>
+    <string name="welcome_subtext">En güzel ürünleri, en uygun fiyatlara alabilir ve kendi zevklerinize göre tasarım yapabilirsiniz...</string>
+    <string name="home_category_text">Ana Kategoriler</string>
+    <string name="search_text">Arama</string>
+    <string name="total_items_text">(%d Sonuç Bulundu)</string>
+</resources>

@@ -1,0 +1,10 @@
+query CategoryList{
+    menuByType(type: "Main Menu") {
+        id
+        name
+        icon
+        parentMenuId
+        type
+    }
+}
+

@@ -1,0 +1,17 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Pressed state (örneğin, tıklama efekti için) -->
+    <item android:state_focused="true">
+        <shape android:shape="rectangle">
+            <solid android:color="#F5F5F5" /> <!-- Tıklama rengi -->
+            <corners android:radius="24dp" />
+        </shape>
+    </item>
+
+    <!-- Default state -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#F5F5F5" />
+            <corners android:radius="24dp" />
+        </shape>
+    </item>
+</selector>

@@ -1,0 +1,7 @@
+query AllCategories{
+    categories {
+        id
+        name
+        parentCategoryId
+    }
+}

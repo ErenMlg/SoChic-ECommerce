@@ -1,0 +1,64 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.Ecommerce" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Primary color for the app -->
+        <item name="colorPrimary">#FAFAFA</item> <!-- Ana tema rengi -->
+        <item name="colorAccent">#33000000</item>
+        <item name="colorPrimaryContainer">#3C3C3C</item>
+        <item name="colorOnPrimary">#F5F5F5</item>
+        <item name="colorOnSecondary">#7E7E7E</item>
+        <item name="android:statusBarColor">#323232</item>
+        <item name="android:navigationBarColor">#323232</item>
+
+        <!-- Accent color for text highlights -->
+        <item name="colorSecondary">#FF6200EE</item> <!-- İkincil tema rengi -->
+
+        <!-- Text color -->
+        <item name="android:textColor">#FAFAFA</item> <!-- Varsayılan metin rengi (siyah) -->
+        <item name="android:textColorHint">#FF888888
+        </item> <!-- Varsayılan ipucu metin rengi (gri) -->
+
+        <!-- Background color -->
+        <item name="android:windowBackground">#323232
+        </item> <!-- Varsayılan arka plan rengi (beyaz) -->
+    </style>
+
+    <!-- Style for CardView -->
+    <style name="CardViewStyle" parent="Widget.MaterialComponents.CardView">
+        <item name="cardBackgroundColor">#3C3C3C</item> <!-- Kartın arka plan rengi (beyaz) -->
+    </style>
+
+    <style name="ButtonStyle" parent="Widget.Material3.Button">
+        <item name="backgroundTint">#3E3E3E</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="fontFamily">@font/poppins_regular</item>
+        <item name="cornerRadius">8dp</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
+    </style>
+
+    <style name="App.Custom.Indicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:color">@null</item>
+        <item name="marginHorizontal">0dp</item>
+    </style>
+
+    <style name="App.Custom.ActiveText" parent="Base.TextAppearance.AppCompat">
+        <item name="fontFamily">@font/poppins_regular</item>
+        <item name="android:fontFamily">@font/poppins_regular</item>
+        <item name="android:textSize">11sp</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:gravity">center</item> <!-- Ortalama -->
+        <item name="android:layout_gravity">bottom</item>
+    </style>
+
+    <style name="App.Custom.InactiveText" parent="Base.TextAppearance.AppCompat">
+        <item name="fontFamily">@font/poppins_regular</item>
+        <item name="android:fontFamily">@font/poppins_regular</item>
+        <item name="android:textSize">11sp</item>
+        <item name="android:textColor">#DB3B3B</item>
+        <item name="android:gravity">center</item> <!-- Ortalama -->
+        <item name="android:layout_gravity">bottom</item>
+    </style>
+
+</resources>

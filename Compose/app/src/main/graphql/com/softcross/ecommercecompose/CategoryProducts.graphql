@@ -1,0 +1,31 @@
+query CategoryProducts($categoryId: String!, $page:Int!) {
+    categoryV2(
+        categoryId: $categoryId,
+        command: {
+            pageNumber: $page
+            pageSize: 10
+            pagePath: "https://hcapi.sch.awstest.hebiar.com/graphql/"
+        }
+    )
+    {
+        data {
+            totalItems
+            totalPages
+            name
+            products
+            {
+                id
+                name
+                shortDescription
+                fullDescription
+                pictures {
+                    imageUrl,
+                }
+                price {
+                    price,
+                    oldPrice
+                }
+            }
+        }
+    }
+}

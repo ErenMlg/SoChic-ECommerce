@@ -1,0 +1,7437 @@
+"""
+A Directive provides a way to describe alternate runtime execution and type validation behavior in a GraphQL document.
+
+In some cases, you need to provide options to alter GraphQL's execution behavior in ways field arguments will not suffice, such as conditionally including or skipping a field. Directives provide this by describing additional information to the executor.
+"""
+type __Directive {
+  name: String!
+
+  description: String
+
+  locations: [__DirectiveLocation!]!
+
+  args: [__InputValue!]!
+
+  isRepeatable: Boolean!
+
+  onOperation: Boolean! @deprecated(reason: "Use `locations`.")
+
+  onFragment: Boolean! @deprecated(reason: "Use `locations`.")
+
+  onField: Boolean! @deprecated(reason: "Use `locations`.")
+}
+
+"""
+A Directive can be adjacent to many parts of the GraphQL language, a __DirectiveLocation describes one such possible adjacencies.
+"""
+enum __DirectiveLocation {
+  """
+  Location adjacent to a query operation.
+  """
+  QUERY
+
+  """
+  Location adjacent to a mutation operation.
+  """
+  MUTATION
+
+  """
+  Location adjacent to a subscription operation.
+  """
+  SUBSCRIPTION
+
+  """
+  Location adjacent to a field.
+  """
+  FIELD
+
+  """
+  Location adjacent to a fragment definition.
+  """
+  FRAGMENT_DEFINITION
+
+  """
+  Location adjacent to a fragment spread.
+  """
+  FRAGMENT_SPREAD
+
+  """
+  Location adjacent to an inline fragment.
+  """
+  INLINE_FRAGMENT
+
+  """
+  Location adjacent to a variable definition.
+  """
+  VARIABLE_DEFINITION
+
+  """
+  Location adjacent to a schema definition.
+  """
+  SCHEMA
+
+  """
+  Location adjacent to a scalar definition.
+  """
+  SCALAR
+
+  """
+  Location adjacent to an object type definition.
+  """
+  OBJECT
+
+  """
+  Location adjacent to a field definition.
+  """
+  FIELD_DEFINITION
+
+  """
+  Location adjacent to an argument definition
+  """
+  ARGUMENT_DEFINITION
+
+  """
+  Location adjacent to an interface definition.
+  """
+  INTERFACE
+
+  """
+  Location adjacent to a union definition.
+  """
+  UNION
+
+  """
+  Location adjacent to an enum definition.
+  """
+  ENUM
+
+  """
+  Location adjacent to an enum value definition.
+  """
+  ENUM_VALUE
+
+  """
+  Location adjacent to an input object type definition.
+  """
+  INPUT_OBJECT
+
+  """
+  Location adjacent to an input object field definition.
+  """
+  INPUT_FIELD_DEFINITION
+}
+
+"""
+One possible value for a given Enum. Enum values are unique values, not a placeholder for a string or numeric value. However an Enum value is returned in a JSON response as a string.
+"""
+type __EnumValue {
+  name: String!
+
+  description: String
+
+  isDeprecated: Boolean!
+
+  deprecationReason: String
+}
+
+"""
+Object and Interface types are described by a list of Fields, each of which has a name, potentially a list of arguments, and a return type.
+"""
+type __Field {
+  name: String!
+
+  description: String
+
+  args: [__InputValue!]!
+
+  type: __Type!
+
+  isDeprecated: Boolean!
+
+  deprecationReason: String
+}
+
+"""
+Arguments provided to Fields or Directives and the input fields of an InputObject are represented as Input Values which describe their type and optionally a default value.
+"""
+type __InputValue {
+  name: String!
+
+  description: String
+
+  type: __Type!
+
+  """
+  A GraphQL-formatted string representing the default value for this input value.
+  """
+  defaultValue: String
+}
+
+"""
+A GraphQL Schema defines the capabilities of a GraphQL server. It exposes all available types and directives on the server, as well as the entry points for query, mutation, and subscription operations.
+"""
+type __Schema {
+  description: String
+
+  """
+  A list of all types supported by this server.
+  """
+  types: [__Type!]!
+
+  """
+  The type that query operations will be rooted at.
+  """
+  queryType: __Type!
+
+  """
+  If this server supports mutation, the type that mutation operations will be rooted at.
+  """
+  mutationType: __Type
+
+  """
+  If this server support subscription, the type that subscription operations will be rooted at.
+  """
+  subscriptionType: __Type
+
+  """
+  A list of all directives supported by this server.
+  """
+  directives: [__Directive!]!
+}
+
+"""
+The fundamental unit of any GraphQL Schema is the type. There are many kinds of types in GraphQL as represented by the `__TypeKind` enum.
+
+Depending on the kind of a type, certain fields describe information about that type. Scalar types provide no information beyond a name and description, while Enum types provide their values. Object and Interface types provide the fields they describe. Abstract types, Union and Interface, provide the Object types possible at runtime. List and NonNull types compose other types.
+"""
+type __Type {
+  kind: __TypeKind!
+
+  name: String
+
+  description: String
+
+  fields(includeDeprecated: Boolean = false): [__Field!]
+
+  interfaces: [__Type!]
+
+  possibleTypes: [__Type!]
+
+  enumValues(includeDeprecated: Boolean = false): [__EnumValue!]
+
+  inputFields: [__InputValue!]
+
+  ofType: __Type
+
+  """
+  `specifiedByURL` may return a String (in the form of a URL) for custom scalars, otherwise it will return `null`.
+  """
+  specifiedByURL: String
+}
+
+"""
+An enum describing what kind of type a given `__Type` is.
+"""
+enum __TypeKind {
+  """
+  Indicates this type is a scalar.
+  """
+  SCALAR
+
+  """
+  Indicates this type is an object. `fields` and `interfaces` are valid fields.
+  """
+  OBJECT
+
+  """
+  Indicates this type is an interface. `fields` and `possibleTypes` are valid fields.
+  """
+  INTERFACE
+
+  """
+  Indicates this type is a union. `possibleTypes` is a valid field.
+  """
+  UNION
+
+  """
+  Indicates this type is an enum. `enumValues` is a valid field.
+  """
+  ENUM
+
+  """
+  Indicates this type is an input object. `inputFields` is a valid field.
+  """
+  INPUT_OBJECT
+
+  """
+  Indicates this type is a list. `ofType` is a valid field.
+  """
+  LIST
+
+  """
+  Indicates this type is a non-null. `ofType` is a valid field.
+  """
+  NON_NULL
+}
+
+type Query {
+  iyzicoCardList: [IyziPaySavedCard]
+
+  iyzicoInstallment(binNumber: String): InstallmentResponse
+
+  allInstallments(price: Float!): [InstallmentResponse]
+
+  paymentRequestByReferenceNo(referenceNo: String): PaymentRequestModelType
+
+  checkAvailability(specialPaymentType: String): CheckAvailabilityResult
+
+  posPoint(request: PosPointRequestInput): PosPointResult
+
+  appHomePage: String
+
+  contentBySchema(schemaName: String): String
+
+  contentsBySchema(schemaName: String): String
+
+  landingPage(slug: String): String
+
+  addressSchemesByCode(countryCode: String, language: String): [AddressSchemeResponse]
+
+  statesByCountryId(countryId: String, language: String): [StateByTenantResponseModel]
+
+  cityByCountryId(countryId: String, language: String): [CityByTenantResponseModel]
+
+  cityByStateId(stateId: String, language: String): [CityByTenantResponseModel]
+
+  districtByCityId(cityId: String, language: String): [DistrictByTenantResponseModel]
+
+  neighborhoodByDistrictId(districtId: String, language: String): [NeighborhoodByTenantResponseModel]
+
+  streetByNeighborhoodId(neighborhoodId: String, language: String): [StreetByTenantResponseModel]
+
+  buildingByStreetId(streetId: String, language: String): [BuildingByTenantResponseModel]
+
+  countryCode: CountryCodeRes
+
+  cities: [CityType]
+
+  languages: [Language]
+
+  countries: [Country]
+
+  addressSchemesById(countryId: Long!): [AddressSchemeResponse]
+
+  regions(cityId: String): [RegionType]
+
+  neighborhoods(regionId: String): [NeighborhoodType]
+
+  interestingTypes: [InterestedType]
+
+  createBaseRule: String
+
+  taxOffices(cityId: String): [TaxOfficeType]
+
+  allCurrencies: [CurrencyModelType]
+
+  categoryV2(categoryId: String, command: CatalogPagingFilteringTypeInput): ApiResponseOfCategoryProductModelType
+
+  searchV2(model: SearchFilterModelInput, command: CatalogPagingFilteringTypeInput): ApiResponseOfSearchProductType
+
+  productx(id: String): ProductDetailType
+
+  product(id: String): ProductDetailType
+
+  productByBarcode(barcode: String): ProductDetailType
+
+  productBySku(sku: String): ProductDetailType
+
+  productsBySkus(skus: [String]): [ProductDetailType]
+
+  productReviews(productId: String): ProductReviewsModelType
+
+  categories: [CategoryItemType]
+
+  productContent(query: ProductContentQueryModelTypeInput): String
+
+  productStoreStock(sku: String): [StoreProductModelType]
+
+  productStoreDistance(skus: [String], latitude: Float!, longitude: Float!): ApiResponseOfListOfProductStoreDistanceModel
+
+  productUrl(productId: String): String
+
+  urlAction(slug: String): UrlRecordType
+
+  allUrlRecord: [UrlRecordType]
+
+  filterableAttributes: [FilterableAttributes]
+
+  urlRecordByType(type: EntityType!): [UrlRecord]
+
+  quickSearch(q: String, pcount: Int! = 10, ccount: Int! = 5, wcount: Int! = 5): QuickSearchResult
+
+  category(categoryId: String, command: CatalogPagingFilteringTypeInput): CategoryModelType
+
+  username: CustomerType
+
+  customerAddresses(countryCode: String = ""): [AddressType]
+
+  customerInfo: CustomerInfoType
+
+  customerGiftCards: [GiftCardModel]
+
+  cardInfoAndGiftCards: CardInfoAndGiftCardModel
+
+  customerOrders(pageIndex: Int! = 0, pageSize: Int! = 5, orderStatus: String, inStore: Boolean! = false, calledByApp: Boolean! = false): CustomerOrderListModel
+
+  orderDetails(orderId: String): OrderDetailsModel
+
+  storeOrderDetail(orderId: String): StoreOrderDetailModel
+
+  orderDetailWithShipments(orderId: String): OrderDetailWithShipmentModel
+
+  loginRegisterIsActivePlugin(pageName: String = "Login", isDefault: Boolean! = true): LoginRegisterActiveModel
+
+  easyLoginCheck(model: EasyLoginCheckModelInput): EasyCheckLoginModel
+
+  easyRegister(model: EasyRegisterModelInput): EasyRegisterCheckModel
+
+  easyLoginCustomerNavigation: EasyLoginCustomerNavigation
+
+  customerNavigation: CustomerNavigationModelType
+
+  anonymousAccountModel: AnonymousAccountViewModel
+
+  customerPointHistory(guestData: String): [CustomerPointHistory]
+
+  customerLoyaltyPoint(isCart: Boolean!, guestData: String): CustomerPointModel
+
+  customerLoyaltyOrderList(model: LoyaltyGetCustomerOrderModelInput, guestData: String): CustomerOrderListLoyaltyModel
+
+  plusAgreementModal: PlusType
+
+  loyaltyParticipation(guestData: String): LoyaltyCheckResultModel
+
+  customerProductWatchList: [CustomerWatchItemModel]
+
+  customerSuggestEarnInfo(isCart: Boolean! = false, guestDate: String): CustomerSuggestEarnInfoModel
+
+  customerSuggestEarnTransactions(model: SuggestEarnGetTransactionModelInput, guestDate: String): CustomerSuggestEarnTransactionModel
+
+  favoriteStores: [OurStore]
+
+  favoriteCategories: [FavoriteCategoryType]
+
+  favoriteGroups: [FavoriteGroupType]
+
+  checkRegisteredCustomer(email: String): Boolean!
+
+  cart(guestData: String, prepareAndDisplayOrderReviewData: Boolean! = false): ShoppingCartModelType
+
+  wishList(customerFavoriteGroupId: String): WishListModelType
+
+  wishListProductIds: [WishListProductIdModelType]
+
+  shareListProducts(customerFavoriteGroupId: String, key: String): ShareListProductModelType
+
+  installment(binNumber: String): InstallmentTable
+
+  personalizedProcessing(cardName: String, cardNumber: String, month: String, year: String, cvc: String, installment: Int! = 1, price: Decimal): PersonalizedProcessingResponse
+
+  availablePickupPointCities: [SelectListItem]
+
+  pickupPointsByCityId(cityId: String): [PickupPoint]
+
+  pickupPoints: [PickupPointType]
+
+  specialSuccessCallback(id: String, token: String = "", paymentMethodNonce: String = ""): PaymentResultTypeModel
+
+  ourStores: [OurStore]
+
+  contentByName(name: String): Content
+
+  menuByType(type: String): [MenuItemModel]
+
+  contractByWidgetZone(zone: String): PublicInfoModel
+
+  landingPageByType(type: String): Layout
+
+  landingPageById(id: String): Layout
+
+  plugInReload: Boolean!
+
+  topic(systemName: String): String
+
+  topicsByType(topicType: String): TopicModel
+
+  localization(key: String): String
+
+  localizations(uniqueSeoCode: String, onlyApp: Boolean! = false): [LocalizationItemModel]
+
+  activeLanguages: [LanguageItemModel]
+
+  currentContext: RuleContext
+}
+
+type Mutation {
+  iyzicoDeleteCard(cardToken: String, cardUserKey: String): DeleteCardRequest
+
+  applyPosPoint(request: ApplyPosPointRequestInput): ApplyPosPointResult
+
+  removePosPoint: RemovePosPointResult
+
+  login(email: String, password: String): LoginResult
+
+  register(model: RegisterModelInput): LoginResult
+
+  addCustomerAddress(address: AddressTypeInput, selectShippingAddress: Boolean! = false, selectBillingAddress: Boolean! = false): AddressUpsertResultType
+
+  updateCustomerAddress(address: AddressTypeInput): AddressUpsertResultType
+
+  updateCustomerAttributes(customerAttributes: [CustomerAttributeItemInput]): Boolean!
+
+  deleteCustomerAddress(addressId: String): Boolean!
+
+  updateCustomerInfo(model: CustomerUpdateTypeInput): UpdateCustomerInfoResult
+
+  changePassword(oldPassword: String, newPassword: String): ChangePasswordResult
+
+  passwordRecovery(email: String): String
+
+  updateCustomerPhone(phone: String, sendOtpCode: Boolean!): OTPResultModel
+
+  clearCustomerPhone: Boolean!
+
+  customerOTPSend(model: OTPSendModelInput): OTPResultModel
+
+  customerOTPResult(model: OTPPostModelInput): String
+
+  customerOTPInfoPhone(model: CustomerInfoPhoneModelInput): CustomerInfoPhoneResult
+
+  passwordRecoveryConfirm(token: String, gid: String, password: String): PasswordRecoveryConfirmModel
+
+  updateMembershipAgreement(agreements: [AgreementModelInput]): Boolean!
+
+  sendContactUs(model: ContactUsModelInput): ContactUsResult
+
+  easyPasswordLogin(model: EasyLoginModelInput): LoginResult
+
+  easyOtpSend(model: EasyLoginRegisterOTPPostModelInput): LoginResult
+
+  easyOtpRenewal(model: EasyLoginRegisterOTPPostModelInput): EasyLoginRegisterOTPRenewalModel
+
+  anonymousAccount(model: AnonymousAccountModelInput): AnonymousAccountResultModel
+
+  loyaltyParticipations(phone: String = ""): LoyaltyParticipationResultModel2
+
+  loyaltyOTPSend(model: LoyaltyOTPPostModelInput): String
+
+  loyaltyOTPRenewal(model: LoyaltyOTPPostModelInput): LoyaltyStagingOTPModel
+
+  insertCustomerProductWatch(productId: String, barcode: String, wathcType: SubscribeType!): Boolean!
+
+  deleteCustomerProductWatch(customerProductWatchId: String): Boolean!
+
+  createGuestCustomer(guestData: String): LoginResult
+
+  uploadProfilePicture(picture: Upload): Boolean!
+
+  profileQrCode: ProfileQrCodeResult
+
+  addFavoriteStore(storeCode: String): Boolean!
+
+  removeFavoriteStore(storeCode: String): Boolean!
+
+  addFavoriteCategory(categoryId: String): Boolean!
+
+  removeFavoriteCategory(categoryId: String): Boolean!
+
+  createFavoriteGroup(name: String): Boolean!
+
+  updateFavoriteGroup(id: String, name: String): Boolean!
+
+  createRefreshToken(email: String, refreshToken: String): LoginResult
+
+  deleteFavoriteGroup(id: String): Boolean!
+
+  createCustomerFavoriteGroup(id: String): Boolean!
+
+  shareList(customerFavoriteGroupId: String, isShare: Boolean! = true): ShareListModelType
+
+  addToCart(productId: String, quantity: Int!, attributeId: String, attributeValueId: String, _warehouseId: String, isAdded: Boolean! = false, updatecartitemid: String = "", isWishList: Boolean! = false, giftPackage: Boolean! = false, guestData: String, customerFavoriteGroupId: String, productRecommendKey: String): ShoppingCartUpsertResult
+
+  deleteCartItem(cartItemId: String, guestData: String): ShoppingCartUpsertResult
+
+  deleteWishListItems(productId: String, guestData: String): Boolean!
+
+  applyReferenceCode(referenceCode: String, guestData: String): ShoppingCartModelType
+
+  applyDiscountCoupon(discountcouponcode: String, guestData: String): ShoppingCartModelType
+
+  removeDiscountCoupon(discountcouponcode: String, guestData: String): ShoppingCartModelType
+
+  applyGiftCard(giftcardcouponcode: String, guestData: String): ShoppingCartModelType
+
+  applyGiftCardWithAmount(amount: Float!, guestData: String): ShoppingCartModelType
+
+  removeGiftCard(giftcardcouponcode: String, guestData: String): ShoppingCartModelType
+
+  removeAllAppliedGiftCards(guestData: String): Boolean!
+
+  clearShoppingCart(guestData: String): Boolean!
+
+  applyRewardPoint(model: LoyaltyAddToCartModelInput, guestData: String): ShoppingCartModelType
+
+  removeRewardPointCard(rewardPointId: String, guestData: String): ShoppingCartModelType
+
+  mergeGuestBasket(guestData: String): Boolean!
+
+  selectPickupPoint(pickupPointId: String): Boolean!
+
+  selectShippingAddress(addressId: String): Boolean!
+
+  selectBillingAddress(addressId: String, shipToSameAddress: Boolean! = false): Boolean!
+
+  orderNotification(orderId: String): Boolean!
+
+  paymentBankTransfer(key: String): PaymentResultTypeModel
+
+  cardPayment(paymentRequest: PaymentRequestInput): PaymentResultTypeModel
+
+  specialPayment(specialPaymentRequest: SpecialPaymentRequestInput): PaymentResultTypeModel
+
+  giftCardPayment: PaymentResultTypeModel
+
+  storedCardToken: StoredCardTokenResponse
+
+  confirmPayment(gatewaytoken: String, paymentToken: String): PaymentInfoModel
+
+  storeConfirmPayment(gatewaytoken: String, paymentToken: String): PaymentInfoModel
+
+  addGiftPackageNote(giftPackageNote: String): Boolean!
+
+  removeGiftPackageNote: Boolean!
+
+  storeCheckoutProcess(storePaymentRequest: StorePaymentRequestInput): PaymentResultTypeModel
+
+  createCancelRequest(orderId: String, cancelItems: [CancelItemModelInput]): CreateCancelRequestResult
+
+  createReturnRequest(orderId: String, returnItems: [ReturnItemModelInput]): CreateReturnRequestResult
+
+  productReviews(productId: String, reviewModel: AddProductReviewModelTypeInput): AddProductReviewResult
+
+  setProductReviewHelpfulness(productReviewId: String, washelpful: Boolean!): Boolean!
+
+  productRecommend(productId: String): ProductRecommendModelType
+}
+
+input RegisterModelInput {
+  email: String
+
+  username: String
+
+  password: String
+
+  gender: String
+
+  firstName: String
+
+  lastName: String
+
+  company: String
+
+  streetAddress: String
+
+  streetAddress2: String
+
+  zipPostalCode: String
+
+  city: String
+
+  countryId: String
+
+  stateProvinceId: String
+
+  phone: String
+
+  vatNumber: String
+
+  dateOfBirth: DateTime
+
+  newsletter: Boolean!
+
+  timeZoneId: String
+
+  fax: String
+
+  interestedTypes: [String]
+
+  agreements: [AgreementModelInput]
+}
+
+input AddressTypeInput {
+  title: String
+
+  id: String
+
+  firstName: String
+
+  lastName: String
+
+  email: String
+
+  company: String
+
+  vatNumber: String
+
+  cityId: String
+
+  city: String
+
+  cityCode: String
+
+  externalCityCode: String
+
+  stateCode: String
+
+  externalStateCode: String
+
+  districtCode: String
+
+  externalDistrictCode: String
+
+  streetCode: String
+
+  externalStreetCode: String
+
+  buildingCode: String
+
+  externalBuildingCode: String
+
+  externalAddressCode: String
+
+  formattedAddress: String
+
+  regionId: String
+
+  region: String
+
+  neighborhoodId: String
+
+  neighborhood: String
+
+  neighborhoodCode: String
+
+  externalNeighborhoodCode: String
+
+  address1: String
+
+  address2: String
+
+  zipPostalCode: String
+
+  phoneNumber: String
+
+  faxNumber: String
+
+  customAddressAttributes: [AddressAttributeModelTypeInput]
+
+  formattedCustomAddressAttributes: String
+
+  companyEnabled: Boolean
+
+  companyRequired: Boolean
+
+  vatNumberEnabled: Boolean
+
+  vatNumberRequired: Boolean
+
+  streetAddressEnabled: Boolean
+
+  streetAddressRequired: Boolean
+
+  streetAddress2Enabled: Boolean
+
+  streetAddress2Required: Boolean
+
+  zipPostalCodeEnabled: Boolean
+
+  zipPostalCodeRequired: Boolean
+
+  cityEnabled: Boolean
+
+  cityRequired: Boolean
+
+  countryEnabled: Boolean
+
+  stateProvinceEnabled: Boolean
+
+  phoneEnabled: Boolean
+
+  phoneRequired: Boolean
+
+  faxEnabled: Boolean
+
+  faxRequired: Boolean
+
+  isValid: Boolean
+
+  taxOfficeId: String
+
+  taxOffice: String
+
+  corporateCustomer: Boolean
+
+  estimatedDeliveryDate: String
+
+  estimatedDeliveryDay: Int
+
+  countryCode: String
+
+  countryId: String
+
+  country: String
+
+  stateId: String
+
+  state: String
+
+  provinceId: String
+
+  province: String
+
+  streetNameId: String
+
+  streetName: String
+}
+
+input CustomerUpdateTypeInput {
+  email: String
+
+  username: String
+
+  gender: String
+
+  firstName: String
+
+  lastName: String
+
+  dateOfBirthDay: Int
+
+  dateOfBirthMonth: Int
+
+  dateOfBirthYear: Int
+
+  company: String
+
+  streetAddress: String
+
+  streetAddress2: String
+
+  zipPostalCode: String
+
+  city: String
+
+  countryId: String
+
+  stateProvinceId: String
+
+  phone: String
+
+  fax: String
+
+  newsletter: Boolean
+
+  kVKK: Boolean
+
+  signature: String
+
+  timeZoneId: String
+
+  vatNumber: String
+
+  vatNumberStatusNote: String
+
+  customerAttributes: [CustomerAttributeModelTypeInput]
+
+  newsletterCategories: [NewsletterSimpleCategoryTypeInput]
+
+  interestedTypes: [String]
+
+  newsletterPermissions: [NewsletterPermissionModelTypeInput]
+}
+
+input PaymentRequestInput {
+  creditCardName: String
+
+  creditCardNumber: String
+
+  creditCardExpireYear: Int!
+
+  creditCardExpireMonth: Int!
+
+  creditCardCvv2: String
+
+  installmentCount: Int!
+
+  force3d: Boolean!
+
+  savedCardToken: String
+
+  savedCardReferenceNo: String
+
+  selectedCard: String
+
+  pPKey: String
+
+  cards: [SavedCardModelInput]
+
+  cardCode: String
+
+  saveMyCard: Boolean
+
+  cardName: String
+}
+
+input AddProductReviewModelTypeInput {
+  title: String
+
+  reviewText: String
+
+  rating: Int!
+
+  sizeNumber: SizeNumberType!
+
+  comfort: ComfortType!
+
+  customerNameShow: Boolean
+
+  customerCommentedProduct: Boolean
+
+  displayCaptcha: Boolean
+
+  canCurrentCustomerLeaveReview: Boolean
+
+  successfullyAdded: Boolean
+
+  result: String
+}
+
+input ProductContentQueryModelTypeInput {
+  contentType: String
+
+  filter: [ProductContentQueryFilterInput]
+}
+
+"""
+The `Upload` scalar type represents a file upload.
+"""
+scalar Upload
+
+enum MessageType {
+  EMAIL
+
+  NULL
+
+  SMS
+
+  CALL
+}
+
+enum OTPType {
+  REGISTER
+
+  LOGIN
+
+  ACCOUNT_INFORMATION
+
+  QUICK_EASY_REGISTER
+
+  QUICK_EASY_LOGIN
+
+  QUICK_EASY_LOGIN_GUEST
+
+  EMAIL_VERIFICATION
+
+  NULL
+
+  ACCOUNT_UPDATE
+
+  CHECKOUT
+
+  LOYALTY
+
+  BANK_TRANSFER
+
+  PICK_UP_FROM_STORE
+
+  CLICK_AND_COLLECT
+
+  CASH_ON_DELIVERY
+
+  QUICK_EASY_REGISTER_STAGING
+
+  QUICK_EASY_LOGIN_STAGING
+
+  ORDER_TRACKING
+
+  SERVICE_REQUEST_EASY_LOGIN
+
+  DIGITAL_CREDIT_CHECK
+}
+
+enum PermissionType {
+  CALL_PERMISSION
+
+  EMAIL_PERMISSION
+
+  SMS_PERMISSION
+}
+
+enum OtpVerificationType {
+  LINK
+
+  CODE
+}
+
+enum OrderStatus {
+  PROCESSING
+
+  RECEIVED_BY_THE_STORE
+
+  INVOICED
+
+  SHIPPED
+
+  DELIVERED
+
+  WILL_BE_DELIVERED_TO_STORE
+
+  DELIVERED_TO_STORE
+
+  UN_DELIVERED
+
+  RETURN_REQUEST_RECEIVED
+
+  RETURN_REQUEST_DENIED
+
+  MIX
+
+  PENDING
+
+  COMPLETE
+
+  CANCELLED
+
+  RETURNED
+}
+
+enum ApplyPolicy {
+  BEFORE_RESOLVER
+
+  AFTER_RESOLVER
+}
+
+type CustomerType {
+  id: String
+
+  email: String
+}
+
+type PlusType {
+  required: [String]
+
+  agreementId: String
+
+  agreementTitle: String
+
+  agreementBody: String
+}
+
+input AgreementModelInput {
+  id: String
+
+  value: Boolean!
+}
+
+type CityType {
+  id: String
+
+  name: String
+
+  limitedToStores: Boolean!
+
+  threeLetterIsoCode: String
+
+  twoLetterIsoCode: String
+
+  allowsBilling: Boolean!
+
+  allowsShipping: Boolean!
+
+  displayOrder: Int!
+}
+
+type CountryType {
+  id: Int!
+
+  name: String
+}
+
+type RegionType {
+  id: String
+
+  name: String
+
+  abbreviation: String
+
+  cityId: String
+
+  displayOrder: Int!
+}
+
+type TaxOfficeType {
+  id: String
+
+  name: String
+
+  cityId: String
+}
+
+type NeighborhoodType {
+  id: String
+
+  name: String
+
+  zipPostalCode: String
+
+  displayOrder: Int!
+
+  districtName: String
+
+  abbreviation: String
+}
+
+type PaymentResultTypeModel {
+  errors: [String]
+
+  success: Boolean!
+
+  token: String
+
+  form: String
+
+  savedCardAction: String
+
+  orderId: String
+
+  id: String
+
+  frameUrl: String
+
+  redirectUrl: String
+
+  providerId: String
+
+  paymentUrl: String
+
+  clientSecret: String
+}
+
+"""
+The `DateTime` scalar represents an ISO-8601 compliant date time type.
+"""
+scalar DateTime
+
+type UpdateCustomerInfoResult {
+  status: Boolean!
+
+  reAuthenticate: Boolean!
+
+  token: String
+
+  refreshToken: String
+
+  exception: String
+
+  validationResult: ValidationResultType
+}
+
+type ShoppingCartModelType {
+  specialPayments: [String]
+
+  onePageCheckoutEnabled: Boolean!
+
+  allowPickUpInStore: Boolean!
+
+  oTPPickupPointEnabled: Boolean!
+
+  customerPhoneRequired: Boolean!
+
+  showSku: Boolean!
+
+  showProductImages: Boolean!
+
+  isEditable: Boolean!
+
+  termsOfServicePopup: Boolean!
+
+  items: [ShoppingCartItemModel]
+
+  checkoutAttributeInfo: String
+
+  checkoutAttributes: [CheckoutAttributeModel]
+
+  warnings: [String]
+
+  minOrderSubtotalWarning: String
+
+  showCheckoutAsGuestButton: Boolean!
+
+  isGuest: Boolean!
+
+  displayTaxShippingInfo: Boolean!
+
+  termsOfServiceOnShoppingCartPage: Boolean!
+
+  termsOfServiceOnOrderConfirmPage: Boolean!
+
+  discountBox: DiscountBoxModel
+
+  giftCardBox: GiftCardBoxModel
+
+  giftPackageBox: GiftPackaggeBoxModel
+
+  loyaltyCardBox: LoyaltyCardBoxModel
+
+  orderReviewData: OrderReviewDataModel
+
+  buttonPaymentMethodViewComponentNames: [String]
+
+  orderTotal: OrderTotalsModelType
+
+  guestData: String
+
+  isOtpEnabled: Boolean!
+
+  isOtpTestEnabled: Boolean!
+
+  loyaltyEnabled: Boolean!
+
+  loyaltyOTPEnabled: Boolean!
+
+  subscriptionBox: SubscriptionBoxModel
+
+  canUseSuggestEarnReferenceCode: Boolean!
+
+  suggestEarnReferenceCodeUsed: Boolean!
+
+  suggestEarnReferenceCode: String
+
+  suggestEarnReferenceCouponCode: String
+}
+
+type GiftCardModelType {
+  genericAttributes: [GenericAttribute]
+
+  couponCode: String
+
+  amount: String
+
+  remaining: String
+
+  id: String
+
+  giftCardType: GiftCardType!
+}
+
+type PasswordRecoveryConfirmModel {
+  disablePasswordChanging: Boolean!
+
+  success: Boolean!
+
+  result: String
+}
+
+type ChangePasswordResult {
+  success: Boolean!
+
+  errors: [String]
+}
+
+type ProductDetailType {
+  defaultPictureZoomEnabled: Boolean!
+
+  defaultPictureModel: PictureModelType
+
+  pictureModels: [PictureModelType]
+
+  productType: String
+
+  name: String
+
+  shortDescription: String
+
+  fullDescription: String
+
+  seoDescription: String
+
+  otherDescription: String
+
+  metaKeywords: String
+
+  metaDescription: String
+
+  metaTitle: String
+
+  seName: String
+
+  showSku: Boolean!
+
+  sku: String
+
+  mainCode: String
+
+  flag: String
+
+  showManufacturerPartNumber: Boolean!
+
+  manufacturerPartNumber: String
+
+  showGtin: Boolean!
+
+  gtin: String
+
+  showVendor: Boolean!
+
+  vendorModel: VendorBriefInfoModel
+
+  hasSampleDownload: Boolean!
+
+  isShipEnabled: Boolean!
+
+  notReturnable: Boolean!
+
+  customerWishlist: Long!
+
+  isFreeShipping: Boolean!
+
+  allowToSelectWarehouse: Boolean!
+
+  additionalShippingCharge: Decimal!
+
+  additionalShippingChargeStr: String
+
+  freeShippingNotificationEnabled: Boolean!
+
+  deliveryDate: String
+
+  deliveryColorSquaresRgb: String
+
+  interval: Int!
+
+  intervalUnit: String
+
+  incBothDate: Boolean!
+
+  parameters: [SelectListItem]
+
+  startDate: DateTime!
+
+  stockAvailability: String
+
+  displayBackInStockSubscription: Boolean!
+
+  emailAFriendEnabled: Boolean!
+
+  askQuestionEnabled: Boolean!
+
+  askQuestionOnProduct: Boolean!
+
+  compareProductsEnabled: Boolean!
+
+  pageShareCode: String
+
+  productPrice: ProductPriceModelType
+
+  breadcrumb: ProductBreadcrumbModelType
+
+  productTags: [ProductTagModelType]
+
+  productAttributes: [ProductAttributeModelType]
+
+  productSpecifications: [ProductSpecificationModelType]
+
+  productReviewOverview: ProductReviewOverviewModelType
+
+  tierPrices: [TierPriceModelType]
+
+  associatedProducts: [ProductDetailType]
+
+  displayDiscontinuedMessage: Boolean!
+
+  currentStoreName: String
+
+  startPrice: Decimal!
+
+  highestBidValue: Decimal!
+
+  endTime: DateTime
+
+  endTimeLocalTime: DateTime
+
+  auctionEnded: Boolean!
+
+  isWishlistProduct: Boolean!
+
+  productRunOutOfEnabled: Boolean!
+
+  productRunOutOfNumber: Int!
+
+  displayProductInstallmentInfoEnabled: Boolean!
+
+  displayProductStoreStockEnabled: Boolean!
+
+  productDetailsSpecificationIds: String
+
+  productDetailsSpecificationValues: String
+
+  productDetailsSpecificationValuesJson: String
+
+  genericAttributes: [GenericAttribute]
+
+  id: String
+
+  addToCart: AddToCartModelType
+
+  productBundleModels: [ProductBundleModelType]
+
+  productManufacturers: [ManufacturerModelType]
+
+  colors: [OptionTypeModel]
+
+  productRewards: [ProductRewardModel]
+
+  orderMaximumQuantity: Int!
+
+  productColorsEnabled: Boolean!
+
+  productBackInStockEnabled: Boolean!
+
+  productPriceDropEnabled: Boolean!
+
+  productSlicers: ProductSlicerModelType
+
+  dynamicEntities: [ElasticDynamicEntities]
+
+  attributes: [ProductAttributesModelType]
+}
+
+type CurrencyModelType {
+  currencyCode: String
+
+  rate: Decimal!
+
+  name: String
+}
+
+input AddressAttributeModelTypeInput {
+  name: String
+
+  isRequired: Boolean!
+
+  defaultValue: String
+
+  attributeControlType: AttributeControlType!
+
+  values: [AddressAttributeValueModelTypeInput]
+
+  id: String
+}
+
+input CustomerAttributeModelTypeInput {
+  name: String
+
+  isRequired: Boolean!
+
+  customerCanEdit: Boolean!
+
+  showOnUserInfoPage: Boolean!
+
+  showOnRegisterPage: Boolean!
+
+  isMultiSelect: Boolean!
+
+  defaultValue: String
+
+  attributeControlType: AttributeControlType!
+
+  values: [CustomerAttributeValueModelTypeInput]
+
+  id: String
+
+  displayOrder: Int!
+}
+
+input NewsletterSimpleCategoryTypeInput {
+  id: String
+
+  name: String
+
+  description: String
+
+  selected: Boolean!
+}
+
+input NewsletterPermissionModelTypeInput {
+  name: PermissionName!
+
+  value: Boolean!
+}
+
+input SavedCardModelInput {
+  cardId: String
+
+  cardUserKey: String
+
+  cardToken: String
+
+  cardName: String
+
+  binNumber: String
+
+  cardBankName: String
+
+  cardBankCode: Long
+
+  cardAssociation: String
+}
+
+enum SizeNumberType {
+  SMALL
+
+  FULL
+
+  BIG
+}
+
+enum ComfortType {
+  UNCOMFORTABLE
+
+  COMFORTABLE
+
+  VERY_COMFORTABLE
+}
+
+input ProductContentQueryFilterInput {
+  key: String
+
+  value: String
+}
+
+type SavedCardModel {
+  id: String
+
+  cardId: String
+
+  cardUserKey: String
+
+  cardToken: String
+
+  cardName: String
+
+  binNumber: String
+
+  cardBankName: String
+
+  cardBankCode: Long
+
+  cardAssociation: String
+
+  createdOnUtc: DateTime!
+}
+
+type InstallmentResponse {
+  status: Boolean!
+
+  error: String
+
+  force3ds: Int!
+
+  bankCode: Long!
+
+  cardFamilyName: String
+
+  cardFamilyLogo: String
+
+  bankName: String
+
+  bankLogo: String
+
+  binNumber: String
+
+  cardType: String
+
+  cardAssociation: String
+
+  oneShotInfo: String
+
+  installments: [Installment]
+}
+
+type PaymentRequestModelType {
+  id: String
+
+  paymentCard: PaymentCard
+
+  posOrderId: String
+
+  callbackUrl: String
+
+  paymentSource: String
+
+  basketItems: [BasketItem]
+
+  billingAddress: PaymentRequestAddressModelType
+
+  shippingAddress: PaymentRequestAddressModelType
+
+  buyer: Buyer
+
+  currency: String
+
+  paymentGroup: String
+
+  basketId: String
+
+  paymentChannel: String
+
+  installment: Int
+
+  paidPrice: Decimal!
+
+  price: Decimal!
+
+  connectorName: String
+
+  posInfo: PosInfoModelType
+
+  fraudScore: Int
+
+  bankTransferInfo: BankTransferInfo
+
+  cargoPaymentInfo: CargoPaymentInfo
+}
+
+type CheckAvailabilityResult {
+  success: Boolean!
+
+  resultCode: String
+
+  message: String
+}
+
+type PosPointResult {
+  success: Boolean!
+
+  message: String
+
+  point: Float!
+
+  resultData: String
+}
+
+input PosPointRequestInput {
+  cardNumber: String
+
+  expireYear: String
+
+  expireMonth: String
+}
+
+type IyziPaySavedCard {
+  genericAttributeValue(key: String): String
+
+  customerId: String
+
+  cardUserKey: String
+
+  cardToken: String
+
+  cardName: String
+
+  binNumber: String
+
+  createdOnUtc: DateTime!
+
+  cardBankName: String
+
+  cardBankCode: Long
+
+  cardAssociation: String
+
+  genericAttributes: [GenericAttribute]
+
+  id: String
+}
+
+type AddressSchemeResponse {
+  countryAddressSchemeEntity: CountryAddressSchemeEntity
+
+  countryAddressScheme: CountryAddressScheme
+}
+
+type StateByTenantResponseModel {
+  id: Long!
+
+  code: String
+
+  timeZone: String
+
+  state: StateResponseModel!
+}
+
+type CityByTenantResponseModel {
+  id: Long!
+
+  code: String
+
+  city: CityResponseModel
+}
+
+type DistrictByTenantResponseModel {
+  id: Long!
+
+  code: String
+
+  district: DistrictResponseModel
+}
+
+type NeighborhoodByTenantResponseModel {
+  id: Long!
+
+  code: String
+
+  neighborhood: NeighborhoodResponseModel
+}
+
+type StreetByTenantResponseModel {
+  id: Long!
+
+  code: String
+
+  neighbourhood: StreetResponseModel
+}
+
+type BuildingByTenantResponseModel {
+  id: Long!
+
+  code: String
+
+  building: BuildingResponseModel
+}
+
+type CountryCodeRes {
+  id: Long!
+
+  name: String
+
+  code: String
+}
+
+type Language {
+  id: Int!
+
+  code: String
+
+  iconPath: String
+
+  name: String
+
+  textDirection: String
+
+  subFolderPath: String
+}
+
+type Country {
+  id: Long!
+
+  countryId: Long!
+
+  name: String
+
+  code: String
+
+  callingCode: String
+
+  timeZone: String
+
+  flagImageURL: String
+
+  subFolderPath: String
+
+  languages: [Language]
+
+  defaultLanguage: Language
+
+  currencies: [Currency]
+
+  defaultCurrency: Currency
+
+  continent: Continent
+
+  countryRegion: CountryRegion
+
+  displayOrder: Int!
+
+  isActive: Boolean!
+}
+
+"""
+The `Long` scalar type represents non-fractional signed whole 64-bit numeric values. Long can represent values between -(2^63) and 2^63 - 1.
+"""
+scalar Long
+
+type InterestedType {
+  genericAttributeValue(key: String): String
+
+  name: String
+
+  code: String
+
+  values: String
+
+  active: Boolean!
+
+  createdDateUtc: DateTime!
+
+  link: String
+
+  subCategoryId: String
+
+  genericAttributes: [GenericAttribute]
+
+  id: String
+}
+
+type ApiResponseOfCategoryProductModelType {
+  isSuccess: Boolean!
+
+  errorType: String
+
+  errorMesssage: String
+
+  errorSource: String
+
+  data: CategoryProductModelType
+}
+
+input CatalogPagingFilteringTypeInput {
+  specificationFilter: SpecificationFilterTypeInput
+
+  orderBy: Int
+
+  allowProductSorting: Boolean
+
+  availableSortOptions: [ProductSortingItemTypeInput]
+
+  pageNumber: Int
+
+  allowCustomersToSelectPageSize: Boolean
+
+  pageSize: Int
+
+  totalItems: Int
+
+  totalPages: Int
+
+  pageSizeOptions: [PageSizeOptionTypeInput]
+
+  priceRangeFilter: PriceRangeFilterModelTypeInput
+
+  selectedSpecFilter: [String]
+
+  firstItem: Int
+
+  hasNextPage: Boolean
+
+  hasPreviousPage: Boolean
+
+  lastItem: Int
+
+  pagePath: String
+
+  prepareSpecsFilters: Boolean
+}
+
+type ApiResponseOfSearchProductType {
+  isSuccess: Boolean!
+
+  errorType: String
+
+  errorMesssage: String
+
+  errorSource: String
+
+  data: SearchProductType
+}
+
+input SearchFilterModelInput {
+  q: String
+
+  advanced: Boolean
+
+  categoryId: String
+
+  includeSubCategories: Boolean
+
+  minPrice: Decimal
+
+  maxPrice: Decimal
+}
+
+type ProductReviewsModelType {
+  productId: String
+
+  defaultPictureZoomEnabled: Boolean!
+
+  picture: PictureModelType
+
+  productName: String
+
+  productSKU: String
+
+  productSeName: String
+
+  productPrice: Decimal!
+
+  items: [ProductReviewModelType]
+
+  addProductReview: AddProductReviewModelType
+}
+
+type CategoryItemType {
+  id: String
+
+  parentCategoryId: String
+
+  name: String
+
+  description: String
+
+  icon: String
+
+  flag: String
+
+  flagStyle: String
+
+  picture: String
+
+  genericAttributes: [GenericAttribute]
+
+  showOnHomePage: Boolean!
+
+  showOnSearchBox: Boolean!
+
+  includeInTopMenu: Boolean!
+
+  hideOnCatalog: Boolean!
+}
+
+type StoreProductModelType {
+  inventoryQty: Int!
+
+  itemCode: String
+
+  barcode: String
+
+  colorCode: String
+
+  itemDim1Code: String
+
+  warehouseCode: String
+
+  store: OurStore
+}
+
+type ApiResponseOfListOfProductStoreDistanceModel {
+  isSuccess: Boolean!
+
+  errorType: String
+
+  errorMesssage: String
+
+  errorSource: String
+
+  data: [ProductStoreDistanceModel]
+}
+
+type UrlRecordType {
+  id: String
+
+  entityId: String
+
+  entityName: String
+
+  slug: String
+
+  isActive: Boolean!
+
+  languageId: String
+
+  languageCulture: String
+
+  redirectMethod: String
+}
+
+type FilterableAttributes {
+  id: Int!
+
+  type: String
+
+  name: String
+
+  metaType: String
+
+  value: String
+}
+
+type UrlRecord {
+  genericAttributeValue(key: String): String
+
+  entityId: String
+
+  entityName: String
+
+  slug: String
+
+  isActive: Boolean!
+
+  languageId: String
+
+  storeId: String
+
+  genericAttributes: [GenericAttribute]
+
+  id: String
+}
+
+enum EntityType {
+  VENDOR
+
+  TOPIC
+
+  PRODUCT
+
+  NEWS_ITEM
+
+  KNOWLEDGEBASE_CATEGORY
+
+  KNOWLEDGEBASE_ARTICLE
+
+  CATEGORY
+}
+
+type QuickSearchResult {
+  categories: [QuickSearchProductCategory]
+
+  keywords: [String]
+
+  products: [QuickSearchProduct]
+}
+
+type CategoryModelType {
+  id: String
+
+  parentCategoryId: String
+
+  name: String
+
+  description: String
+
+  metaKeywords: String
+
+  metaDescription: String
+
+  metaTitle: String
+
+  seName: String
+
+  noIndex: Boolean!
+
+  flag: String
+
+  flagStyle: String
+
+  icon: String
+
+  genericAttributes: [GenericAttribute]
+
+  pictureModel: PictureModelType
+
+  pagingFilteringContext: CatalogPagingFilteringType
+
+  displayCategoryBreadcrumb: Boolean!
+
+  categoryBreadcrumb: [CategoryModelType]
+
+  subCategories: [SubCategoryModelType]
+
+  featuredProducts: [ProductOverviewType]
+
+  products: [ProductOverviewType]
+
+  faqSeo: [CategoryFaqSeoModelType]
+
+  fasedSeo: CategoryFasedSeoModelType
+
+  fasedSeoList: [CategoryFasedSeoModelType]
+
+  categoryTemplateCss: String
+}
+
+type AddressType {
+  title: String
+
+  id: String
+
+  firstName: String
+
+  lastName: String
+
+  email: String
+
+  company: String
+
+  vatNumber: String
+
+  cityId: String
+
+  city: String
+
+  cityCode: String
+
+  externalCityCode: String
+
+  stateCode: String
+
+  externalStateCode: String
+
+  districtCode: String
+
+  externalDistrictCode: String
+
+  streetCode: String
+
+  externalStreetCode: String
+
+  buildingCode: String
+
+  externalBuildingCode: String
+
+  externalAddressCode: String
+
+  formattedAddress: String
+
+  regionId: String
+
+  region: String
+
+  neighborhoodId: String
+
+  neighborhood: String
+
+  neighborhoodCode: String
+
+  externalNeighborhoodCode: String
+
+  address1: String
+
+  address2: String
+
+  zipPostalCode: String
+
+  phoneNumber: String
+
+  faxNumber: String
+
+  customAddressAttributes: [AddressAttributeModelType]
+
+  formattedCustomAddressAttributes: String
+
+  companyEnabled: Boolean
+
+  companyRequired: Boolean
+
+  vatNumberEnabled: Boolean
+
+  vatNumberRequired: Boolean
+
+  streetAddressEnabled: Boolean
+
+  streetAddressRequired: Boolean
+
+  streetAddress2Enabled: Boolean
+
+  streetAddress2Required: Boolean
+
+  zipPostalCodeEnabled: Boolean
+
+  zipPostalCodeRequired: Boolean
+
+  cityEnabled: Boolean
+
+  cityRequired: Boolean
+
+  countryEnabled: Boolean
+
+  stateProvinceEnabled: Boolean
+
+  phoneEnabled: Boolean
+
+  phoneRequired: Boolean
+
+  faxEnabled: Boolean
+
+  faxRequired: Boolean
+
+  isValid: Boolean
+
+  taxOfficeId: String
+
+  taxOffice: String
+
+  corporateCustomer: Boolean
+
+  estimatedDeliveryDate: String
+
+  estimatedDeliveryDay: Int
+
+  countryCode: String
+
+  countryId: String
+
+  country: String
+
+  stateId: String
+
+  state: String
+
+  provinceId: String
+
+  province: String
+
+  streetNameId: String
+
+  streetName: String
+}
+
+type CustomerInfoType {
+  parseDateOfBirth: DateTime
+
+  id: String
+
+  email: String
+
+  checkUsernameAvailabilityEnabled: Boolean!
+
+  allowUsersToChangeUsernames: Boolean!
+
+  allowUsersToChangeEmail: Boolean!
+
+  usernamesEnabled: Boolean!
+
+  username: String
+
+  genderEnabled: Boolean!
+
+  gender: String
+
+  genderRequired: Boolean!
+
+  firstName: String
+
+  lastName: String
+
+  interestedType: Boolean!
+
+  dateOfBirthEnabled: Boolean!
+
+  dateOfBirthDay: Int
+
+  dateOfBirthMonth: Int
+
+  dateOfBirthYear: Int
+
+  dateOfBirthRequired: Boolean!
+
+  companyEnabled: Boolean!
+
+  companyRequired: Boolean!
+
+  company: String
+
+  streetAddressEnabled: Boolean!
+
+  streetAddressRequired: Boolean!
+
+  streetAddress: String
+
+  streetAddress2Enabled: Boolean!
+
+  streetAddress2Required: Boolean!
+
+  streetAddress2: String
+
+  zipPostalCodeEnabled: Boolean!
+
+  zipPostalCodeRequired: Boolean!
+
+  zipPostalCode: String
+
+  cityEnabled: Boolean!
+
+  cityRequired: Boolean!
+
+  city: String
+
+  countryEnabled: Boolean!
+
+  countryRequired: Boolean!
+
+  countryId: String
+
+  availableCountries: [SelectListItem]
+
+  stateProvinceEnabled: Boolean!
+
+  stateProvinceRequired: Boolean!
+
+  stateProvinceId: String
+
+  availableStates: [SelectListItem]
+
+  phoneEnabled: Boolean!
+
+  phoneRequired: Boolean!
+
+  phone: String
+
+  faxEnabled: Boolean!
+
+  faxRequired: Boolean!
+
+  fax: String
+
+  newsletterEnabled: Boolean!
+
+  newsletter: Boolean!
+
+  newsletterPermissionEnabled: Boolean!
+
+  newsletterPermissions: CustomerPreferenceHistoryModel
+
+  kVKK: Boolean!
+
+  kVKKPermissionsEnabled: Boolean!
+
+  kVKKPermissions: CustomerPreferenceHistoryModel
+
+  signatureEnabled: Boolean!
+
+  signature: String
+
+  is2faEnabled: Boolean!
+
+  timeZoneId: String
+
+  allowCustomersToSetTimeZone: Boolean!
+
+  availableTimeZones: [SelectListItem]
+
+  vatNumber: String
+
+  vatNumberStatusNote: String
+
+  displayVatNumber: Boolean!
+
+  associatedExternalAuthRecords: [AssociatedExternalAuthModelType]
+
+  numberOfExternalAuthenticationProviders: Int!
+
+  customerAttributes: [CustomerAttributeModelType]
+
+  newsletterCategories: [NewsletterSimpleCategoryType]
+
+  interestedTypes: [InterestedType]
+
+  customerInterestedTypeOptions: [InterestedTypeOption]
+
+  shippingAddressId: String
+
+  billingAddressId: String
+
+  lastLoginDateUtc: DateTime
+
+  lastPurchaseDateUtc: DateTime
+
+  oTPPhone: String
+
+  oTPPhoneSync: Boolean!
+
+  customerRewardSegment: String
+
+  erpCustomerCode: String
+
+  profilePictureUrl: String
+
+  discountCoupons: [DiscountCouponModelType]
+
+  profileFillRate: Int!
+
+  emailVerificationRequired: Boolean!
+
+  suggestEarn: SuggestEarnModelType
+
+  customerSegmentRoles: [CustomerSegmentRole]
+}
+
+type GiftCardModel {
+  genericAttributeValue(key: String): String
+
+  giftCardTypeId: Int!
+
+  amount: Float!
+
+  isGiftCardActivated: Boolean!
+
+  giftCardCouponCode: String
+
+  recipientName: String
+
+  recipientEmail: String
+
+  senderName: String
+
+  senderEmail: String
+
+  message: String
+
+  isRecipientNotified: Boolean!
+
+  createdOnUtc: DateTime!
+
+  giftCardType: GiftCardType!
+
+  genericAttributes: [GenericAttribute]
+
+  id: String
+}
+
+type CardInfoAndGiftCardModel {
+  cardOwner: String
+
+  cardNumber: String
+
+  cvv: String
+
+  total: String
+
+  giftCards: [GiftCardModel]
+}
+
+type CustomerOrderListModel {
+  orders: [CustomerOrderOrderDetailsModel]
+
+  recurringOrders: [RecurringOrderModel]
+
+  cancelRecurringPaymentErrors: [String]
+
+  pageSize: Int!
+
+  pageIndex: Int!
+
+  totalCount: Int!
+
+  totalPages: Int!
+}
+
+type OrderDetailsModel {
+  printMode: Boolean!
+
+  pdfInvoiceDisabled: Boolean!
+
+  userCanCancelUnpaidOrder: Boolean!
+
+  createdOn: DateTime!
+
+  orderStatus: String
+
+  orderTypeEnum: OrderPlacedType!
+
+  isReOrderAllowed: Boolean!
+
+  isReturnRequestAllowed: Boolean!
+
+  isShippable: Boolean!
+
+  pickUpInStore: Boolean!
+
+  pickupAddress: AddressType
+
+  shippingStatus: String
+
+  shippingAddress: AddressType
+
+  shippingMethod: String
+
+  shippingAdditionDescription: String
+
+  shipments: [ShipmentBriefModel]
+
+  billingAddress: AddressType
+
+  vatNumber: String
+
+  orderNumber: Int!
+
+  paymentMethod: String
+
+  paymentMethodStatus: String
+
+  canRePostProcessPayment: Boolean!
+
+  customValues: [KeyValuePairOfStringAndString!]
+
+  orderSubtotal: String
+
+  orderSubTotalDiscount: String
+
+  orderShipping: String
+
+  paymentMethodAdditionalFee: String
+
+  checkoutAttributeInfo: String
+
+  pricesIncludeTax: Boolean!
+
+  displayTaxShippingInfo: Boolean!
+
+  tax: String
+
+  taxRates: [OrderDetailTaxRate]
+
+  displayTax: Boolean!
+
+  displayTaxRates: Boolean!
+
+  orderTotalDiscount: String
+
+  redeemedRewardPoints: Int!
+
+  redeemedRewardPointsAmount: String
+
+  orderTotal: String
+
+  orderRewardPointTotal: Float!
+
+  posPoint: String
+
+  giftCards: [OrderDetailGiftCardType]
+
+  discounts: [OrderDetailDiscountType]
+
+  showSku: Boolean!
+
+  orderNotes: [OrderNote]
+
+  showAddOrderNote: Boolean!
+
+  id: String
+
+  genericAttributes: [GenericAttribute]
+
+  items: [OrderItemModel]
+
+  followUrl: String
+
+  firtTotal: Float!
+
+  lineDiscount: Float!
+
+  paymentType: String
+
+  bankName: String
+
+  inStore: Boolean!
+
+  store: OurStore
+
+  cardNumber: String
+
+  userCanCancelOrder: Boolean
+
+  userCanReturnOrder: Boolean
+
+  paymentAgent: String
+}
+
+type StoreOrderDetailModel {
+  id: String
+
+  storeName: String
+
+  createDate: String
+
+  paymentType: String
+
+  invoiceNumber: String
+
+  invoiceLink: String
+
+  orderTotal: String
+
+  isReturn: Boolean!
+
+  earnedPoint: String
+
+  firstValidDate: String
+
+  items: [OrderItemModel]
+}
+
+type OrderDetailWithShipmentModel {
+  createdOn: DateTime!
+
+  orderDate: String
+
+  orderTypeEnum: OrderPlacedType!
+
+  isReOrderAllowed: Boolean!
+
+  isReturnRequestAllowed: Boolean!
+
+  isShippable: Boolean!
+
+  pickUpInStore: Boolean!
+
+  pickupAddress: AddressType
+
+  shippingStatus: String
+
+  shippingAddress: AddressType
+
+  shippingMethod: String
+
+  shippingAdditionDescription: String
+
+  shipments: [ShipmentType]
+
+  billingAddress: AddressType
+
+  orderNumber: Int!
+
+  paymentMethod: String
+
+  paymentMethodStatus: String
+
+  canRePostProcessPayment: Boolean!
+
+  customValues: [KeyValuePairOfStringAndString!]
+
+  orderSubtotal: String
+
+  orderSubTotalDiscount: String
+
+  orderShipping: String
+
+  paymentMethodAdditionalFee: String
+
+  posPoint: String
+
+  checkoutAttributeInfo: String
+
+  pricesIncludeTax: Boolean!
+
+  displayTaxShippingInfo: Boolean!
+
+  tax: String
+
+  taxRates: [OrderDetailTaxRate]
+
+  displayTax: Boolean!
+
+  displayTaxRates: Boolean!
+
+  orderTotalDiscount: String
+
+  redeemedRewardPoints: Int!
+
+  redeemedRewardPointsAmount: String
+
+  orderTotal: String
+
+  orderRewardPointTotal: Float!
+
+  giftCards: [OrderDetailGiftCardType]
+
+  discounts: [OrderDetailDiscountType]
+
+  showSku: Boolean!
+
+  orderNotes: [OrderNote]
+
+  showAddOrderNote: Boolean!
+
+  id: String
+
+  genericAttributes: [GenericAttribute]
+
+  firtTotal: Float!
+
+  lineDiscount: Float!
+
+  paymentType: String
+
+  bankName: String
+
+  bankLogo: String
+
+  inStore: Boolean!
+
+  store: OurStore
+
+  shipmentCount: Int!
+
+  installment: Int
+
+  rewardPointValidDate: String
+
+  cardNumber: String
+
+  paymentAgent: String
+
+  userCanCancelOrder: Boolean
+
+  userCanReturnOrder: Boolean
+}
+
+type LoginRegisterActiveModel {
+  pluginPage: Boolean!
+
+  pluginName: String
+
+  pluginMethods: [LoginRegisterActivePluginMethod]
+
+  defaultPage: Boolean!
+}
+
+type EasyCheckLoginModel {
+  result: LoginCheckResultTypeEnum!
+
+  resultText: String
+
+  oTPView: String
+
+  errors: [String]
+
+  otpData: EasyLoginRegisterOTPModel
+}
+
+input EasyLoginCheckModelInput {
+  type: LoginTypeEnum!
+
+  value: String
+
+  returnUrl: String
+
+  guest: Boolean
+}
+
+type EasyRegisterCheckModel {
+  result: RegisterCheckResultTypeEnum!
+
+  resultText: String
+
+  errors: [String]
+
+  success: Boolean!
+
+  otpData: EasyLoginRegisterOTPModel
+
+  token: String
+
+  refreshToken: String
+
+  customerId: String
+
+  customerEmail: String
+
+  customerRewardSegment: String
+
+  erpCustomerCode: String
+
+  lastPurchaseDateUtc: DateTime
+
+  lastLoginDateUtc: DateTime
+}
+
+input EasyRegisterModelInput {
+  email: String
+
+  firstName: String
+
+  lastName: String
+
+  phone: String
+
+  newsletter: Boolean
+
+  agreements: [AgreementModelInput]
+
+  referenceCode: String
+
+  password: String
+
+  gender: String
+
+  dateOfBirthDay: Int
+
+  dateOfBirthMonth: Int
+
+  dateOfBirthYear: Int
+}
+
+type EasyLoginCustomerNavigation {
+  hideChangePassword: Boolean!
+}
+
+type CustomerNavigationModelType {
+  hideInfo: Boolean!
+
+  hideAddresses: Boolean!
+
+  hideOrders: Boolean!
+
+  hideBackInStockSubscriptions: Boolean!
+
+  hideReturnRequests: Boolean!
+
+  hideDownloadableProducts: Boolean!
+
+  hideRewardPoints: Boolean!
+
+  hideChangePassword: Boolean!
+
+  hideDeleteAccount: Boolean!
+
+  hideAnonymousAccount: Boolean!
+
+  hideAvatar: Boolean!
+
+  hideAuctions: Boolean!
+
+  hideForumSubscriptions: Boolean!
+
+  hideNotes: Boolean!
+
+  hideDocuments: Boolean!
+
+  showVendorInfo: Boolean!
+
+  hideReviews: Boolean!
+
+  hideCourses: Boolean!
+
+  hideCreditCart: Boolean!
+
+  hideSubscription: Boolean!
+
+  customerFullName: String
+
+  hideGiftCard: Boolean!
+
+  hideLoyalty: Boolean!
+
+  hideSuggestEarn: Boolean!
+}
+
+type AnonymousAccountViewModel {
+  password: String
+
+  passwordRequired: Boolean!
+
+  anonymousAccountActive: Boolean!
+}
+
+type CustomerPointHistory {
+  customerCode: String
+
+  customerDescription: String
+
+  customerTypeDescription: String
+
+  pointTypeCode: String
+
+  pointDescription: String
+
+  discountPointDescription: String
+
+  firstValidDate: DateTime!
+
+  lastValidDate: DateTime!
+
+  point: Float!
+
+  refNumber: String
+
+  orderNumber: String
+
+  officeCode: String
+
+  storeCode: String
+
+  storeDescription: String
+
+  createdDate: DateTime!
+
+  description: String
+
+  pointRecordTypeDescription: String
+
+  orderId: String
+}
+
+type CustomerPointModel {
+  discountPointTypeCode: String
+
+  availablePoint: Float!
+
+  pendingPoint: Float!
+
+  segment: String
+
+  customerMinimumAvailablePoint: Float!
+
+  totalSpendedPoint: Float!
+
+  totalEarnedPoint: Float!
+
+  customMessage: String
+
+  totalEarnedPointLast1Year: Float!
+
+  totalEarnedPointMessageLast1Year: String
+
+  segmentInfo: SegmentInfo
+
+  lastSegmentInfo: [LastSegment]
+
+  products: [ProductPointMinify]
+
+  maxAvailableSegmentAmountCart: Float!
+
+  segmentRewardInfo: [ProductPointSegmentMinify]
+
+  cartSegmentEarnedPoint: Float!
+
+  resources: [ProductRewardResource]
+}
+
+type CustomerOrderListLoyaltyModel {
+  orders: [OrderDetailsLoyaltyModel]
+
+  pageIndex: Int!
+
+  pageSize: Int!
+
+  totalItems: Int!
+
+  totalPages: Int!
+
+  pageNumber: Int!
+
+  firstItem: Int!
+
+  lastItem: Int!
+
+  hasPreviousPage: Boolean!
+
+  hasNextPage: Boolean!
+
+  genericAttributes: [GenericAttribute]
+}
+
+input LoyaltyGetCustomerOrderModelInput {
+  page: Int!
+
+  pageSize: Int!
+}
+
+type LoyaltyCheckResultModel {
+  result: Boolean!
+
+  settings: [LoyaltyCheckSettings]
+
+  membershipAgreement: MembershipAgreementModel
+
+  customerOTP: LoyaltyOTPOption
+
+  customerPhone: String
+
+  oTPModel: LoyaltyCheckOTPModel
+}
+
+type CustomerWatchItemModel {
+  customerId: String
+
+  productId: String
+
+  watchType: SubscribeType!
+
+  sku: String
+
+  gtin: String
+
+  sizeText: String
+
+  price: Decimal!
+
+  createdOnUtc: DateTime!
+
+  updatedOnUtc: DateTime!
+
+  productName: String
+
+  productSeName: String
+
+  picture: PictureModel
+
+  productPrice: Decimal!
+
+  id: String
+
+  genericAttributes: [GenericAttribute]
+}
+
+type CustomerSuggestEarnInfoModel {
+  suggestEarnEnabled: Boolean!
+
+  acceptTheTerms: Boolean!
+
+  referenceCode: String
+
+  codeValidityDate: DateTime!
+
+  tenancy: Int!
+
+  totalTenancy: Int!
+
+  tenancyFullText: String
+
+  resources: [SuggestEarnResource]
+}
+
+type CustomerSuggestEarnTransactionModel {
+  transactions: [SuggestEarnTransactionModel]
+
+  pageIndex: Int!
+
+  pageSize: Int!
+
+  totalItems: Int!
+
+  totalPages: Int!
+
+  pageNumber: Int!
+
+  firstItem: Int!
+
+  lastItem: Int!
+
+  hasPreviousPage: Boolean!
+
+  hasNextPage: Boolean!
+
+  genericAttributes: [GenericAttribute]
+}
+
+input SuggestEarnGetTransactionModelInput {
+  page: Int!
+
+  pageSize: Int!
+}
+
+type OurStore {
+  genericAttributeValue(key: String): String
+
+  name: String
+
+  country: String
+
+  city: String
+
+  district: String
+
+  address: String
+
+  phone: String
+
+  longitude: String
+
+  latitude: String
+
+  workingHours: String
+
+  weekendWorkingHours: String
+
+  isReturnable: Boolean!
+
+  storeCode: String
+
+  email: String
+
+  isNew: Boolean!
+
+  order: Int!
+
+  isActive: Boolean!
+
+  neighbourhood: String
+
+  countryLocalizations: [KeyValuePairOfStringAndString!]
+
+  cityLocalizations: [KeyValuePairOfStringAndString!]
+
+  districtLocalizations: [KeyValuePairOfStringAndString!]
+
+  neighbourhoodLocalizations: [KeyValuePairOfStringAndString!]
+
+  images: [OurStoreImage]
+
+  genericAttributes: [GenericAttribute]
+
+  id: String
+}
+
+type FavoriteCategoryType {
+  categoryId: String
+
+  categoryName: String
+}
+
+type FavoriteGroupType {
+  id: String
+
+  name: String
+
+  numberOfViews: Int!
+}
+
+type WishListModelType {
+  emailWishlistEnabled: Boolean!
+
+  isEditable: Boolean!
+
+  isWishlist: Boolean!
+
+  displayAddToCart: Boolean!
+
+  displayTaxShippingInfo: Boolean!
+
+  customerGuid: UUID!
+
+  customerFullname: String
+
+  showProductImages: Boolean!
+
+  showSku: Boolean!
+
+  warnings: [String]
+
+  numberOfViews: Int!
+
+  items: [ShoppingCartItemModel]
+}
+
+type WishListProductIdModelType {
+  shoppingCartItemId: String
+
+  productId: String
+
+  customerFavoriteGroupId: String
+}
+
+type ShareListProductModelType {
+  isWishlist: Boolean!
+
+  displayAddToCart: Boolean!
+
+  displayTaxShippingInfo: Boolean!
+
+  showProductImages: Boolean!
+
+  showSku: Boolean!
+
+  favoriteGroupName: String
+
+  warnings: [String]
+
+  items: [ShoppingCartItemModel]
+}
+
+type InstallmentTable {
+  binNumber: String
+
+  commercial: Int!
+
+  price: Decimal!
+
+  priceText: String
+
+  cardType: String
+
+  cardAssociation: String
+
+  cardFamilyName: String
+
+  force3Ds: Boolean!
+
+  bankCode: String
+
+  bankName: String
+
+  forceCvc: Boolean
+
+  has3dDefault: Boolean!
+
+  has3dOption: Boolean!
+
+  bankLogo: String
+
+  cardFamilyLogo: String
+
+  installmentPrices: [InstallmentPrice]
+}
+
+type PersonalizedProcessingResponse {
+  success: Boolean!
+
+  message: String
+
+  cardType: String
+
+  cardAssociation: String
+
+  cardFamilyName: String
+
+  bankName: String
+
+  cardFamilyLogo: String
+
+  bankLogo: String
+
+  items: [PersonalizedProcessingItem]
+}
+
+"""
+The built-in `Decimal` scalar type.
+"""
+scalar Decimal
+
+type SelectListItem {
+  text: String
+
+  value: String
+
+  selected: Boolean!
+}
+
+type PickupPoint {
+  genericAttributeValue(key: String): String
+
+  code: String
+
+  name: String
+
+  description: String
+
+  adminComment: String
+
+  address: Address
+
+  warehouseId: String
+
+  storeId: String
+
+  pickupFee: Decimal!
+
+  displayOrder: Int!
+
+  isEnabled: Boolean!
+
+  longitude: String
+
+  latitude: String
+
+  workingHours: String
+
+  genericAttributes: [GenericAttribute]
+
+  id: String
+}
+
+type PickupPointType {
+  id: String
+
+  name: String
+
+  longitude: String
+
+  latitude: String
+
+  workingHours: String
+
+  city: String
+
+  district: String
+}
+
+type Content {
+  genericAttributeValue(key: String): String
+
+  displayType: ContentDisplayType!
+
+  contentViewId: String
+
+  contentItems: [ContentItem]
+
+  name: String
+
+  hTML: String
+
+  widgetZone: String
+
+  published: Boolean!
+
+  displayOrder: Int!
+
+  limitedToStores: Boolean!
+
+  stores: [String]
+
+  locales: [LocalizedProperty]
+
+  customField1: String
+
+  customField2: String
+
+  customField3: String
+
+  customField4: String
+
+  customField5: String
+
+  genericAttributes: [GenericAttribute]
+
+  id: String
+}
+
+type MenuItemModel {
+  id: Int!
+
+  menuId: Int!
+
+  name: String
+
+  createdType: String
+
+  refType: String
+
+  refId: String
+
+  url: String
+
+  parentMenuId: Int
+
+  createDate: DateTime!
+
+  sortNumber: Int!
+
+  visible: Boolean!
+
+  sectionId: Int
+
+  menuFullPath: String
+
+  type: String
+
+  style: String
+
+  icon: String
+
+  image: String
+
+  startDate: DateTime
+
+  endDate: DateTime
+
+  visibleProductCount: Int!
+
+  targetType: String
+
+  targetValue: String
+
+  variableValues: [MenuItemVariableValueModel]
+}
+
+type PublicInfoModel {
+  contents: [ContractContent]
+
+  genericAttributes: [GenericAttribute]
+}
+
+type Layout {
+  url: String
+
+  title: String
+
+  contentType: String
+
+  metaDescription: String
+
+  metaKeywoard: String
+
+  tags: [String]
+
+  html: String
+
+  layoutType: String
+
+  isvalid: Boolean!
+
+  createDate: DateTime!
+
+  publishStartDate: DateTime
+
+  publishEndDate: DateTime
+
+  banners: [LayoutItem]
+
+  id: String
+}
+
+type TopicModel {
+  topics: [Topic]
+
+  genericAttributes: [GenericAttribute]
+}
+
+type LocalizationItemModel {
+  key: String
+
+  value: String
+}
+
+type LanguageItemModel {
+  id: String
+
+  name: String
+
+  languageCulture: String
+
+  flagImageFileName: String
+
+  rtl: Boolean!
+
+  published: Boolean!
+
+  limitedToStores: Boolean!
+
+  displayOrder: Int!
+
+  uniqueSeoCode: String
+}
+
+type RuleContext {
+  toKey: Int!
+
+  isAuthenticated: Boolean!
+
+  origin: String
+
+  appId: String
+
+  domain: String
+
+  channel: String
+
+  subChannel: String
+
+  pos: String
+
+  store: String
+
+  culture: String
+
+  language: String
+
+  country: String
+
+  webShoplanguageId: String
+}
+
+type DeleteCardResult {
+  status: Boolean!
+
+  error: String
+
+  message: String
+
+  group: String
+
+  locale: String
+
+  systemTime: Long!
+
+  conversationId: String
+}
+
+type ApplyPosPointResult {
+  isApplied: Boolean!
+
+  message: String
+}
+
+input ApplyPosPointRequestInput {
+  cardNumber: String
+
+  expireYear: String
+
+  expireMonth: String
+
+  point: Decimal!
+}
+
+type RemovePosPointResult {
+  success: Boolean!
+}
+
+type DeleteCardRequest {
+  message: String
+
+  group: String
+
+  locale: String
+
+  systemTime: Long!
+
+  conversationId: String
+
+  status: Boolean!
+
+  error: String
+}
+
+type LoginResult {
+  status: String
+
+  token: String
+
+  customerId: String
+
+  customerEmail: String
+
+  customerRewardSegment: String
+
+  erpCustomerCode: String
+
+  refreshToken: String
+
+  errors: [String]
+
+  schema: String
+
+  lastPurchaseDateUtc: DateTime
+
+  lastLoginDateUtc: DateTime
+
+  membershipAgreementsToBeApproved: [String]
+}
+
+type AddressUpsertResultType {
+  status: AddressUpsertResultStatus!
+
+  error: [String]
+
+  address: AddressType
+}
+
+input CustomerAttributeItemInput {
+  id: String
+
+  value: String
+}
+
+type OTPResultModel {
+  success: Boolean!
+
+  message: String
+
+  oTPData: OTPModel
+}
+
+input OTPSendModelInput {
+  messageType: MessageType!
+
+  oTPType: OTPType!
+
+  otpVerificationType: OtpVerificationType
+
+  permission: PermissionType
+
+  email: String
+
+  phone: String
+}
+
+input OTPPostModelInput {
+  verificationCode: String
+
+  otpQueueId: String
+
+  externalId: String
+
+  oTPType: OTPType!
+}
+
+type CustomerInfoPhoneResult {
+  status: Boolean!
+
+  message: String
+
+  oTPData: OTPModel
+
+  exception: String
+
+  validationResult: ValidationResultType
+}
+
+input CustomerInfoPhoneModelInput {
+  phone: String
+}
+
+type ContactUsResult {
+  status: String
+
+  result: String
+}
+
+input ContactUsModelInput {
+  subject: String
+
+  body: String
+
+  email: String
+
+  fullName: String
+
+  phone: String
+
+  orderNumber: String
+
+  contactAttributeInfo: String
+
+  contactAttributeXml: String
+}
+
+input EasyLoginModelInput {
+  type: LoginTypeEnum!
+
+  email: String
+
+  userName: String
+
+  phone: String
+
+  password: String
+
+  otpNotSync: Boolean
+}
+
+input EasyLoginRegisterOTPPostModelInput {
+  verificationCode: String
+
+  otpQueueId: String
+
+  externalId: String
+}
+
+type EasyLoginRegisterOTPRenewalModel {
+  otpQueueId: String
+
+  externalId: String
+
+  result: String
+
+  verificationCodeRenewalPeriod: Long
+
+  verificationCodeCharacterLength: Int
+}
+
+type AnonymousAccountResultModel {
+  result: Boolean!
+
+  errors: [String]
+
+  exception: String
+
+  validationResult: ValidationResultType
+}
+
+input AnonymousAccountModelInput {
+  password: String
+}
+
+type LoyaltyParticipationResultModel2 {
+  resultModel: LoyaltyParticipationResultModel
+
+  otpModel: LoyaltyStagingOTPModel
+}
+
+input LoyaltyOTPPostModelInput {
+  verificationCode: String
+
+  otpQueueId: String
+}
+
+type LoyaltyStagingOTPModel {
+  verificationCode: String
+
+  otpValue: String
+
+  otpQueueId: String
+
+  refCode: String
+
+  verificationCodeRenewalPeriod: Long!
+
+  verificationCodeCharacterLength: Int!
+
+  result: String
+}
+
+enum SubscribeType {
+  NULL
+
+  BACK_IN_STOCK
+
+  PRICE_DROP
+}
+
+type ProfileQrCodeResult {
+  code: String
+}
+
+type ShareListModelType {
+  key: String
+
+  warnings: [String]
+}
+
+type ShoppingCartUpsertResult {
+  status: Boolean!
+
+  message: [String]
+
+  guestData: String
+}
+
+input LoyaltyAddToCartModelInput {
+  loyaltyAmount: String
+
+  applyResult: String
+
+  closeResult: String
+}
+
+input SpecialPaymentRequestInput {
+  specialPaymentType: String
+
+  callbackUrl: String
+}
+
+type StoredCardTokenResponse {
+  token: String
+
+  message: String
+
+  resultData: String
+
+  status: String
+
+  referenceNo: String
+
+  phone: String
+
+  otpValidated: Boolean!
+
+  clientId: String
+
+  jSApi: String
+
+  providerData: String
+}
+
+type PaymentInfoModel {
+  isPay: Boolean!
+
+  authCode: String
+
+  message: String
+
+  order: String
+
+  price: Decimal!
+
+  paymentCost: Decimal!
+
+  installment: Int!
+
+  type: String
+
+  resultData: String
+
+  refNumber: String
+
+  paymentId: String
+
+  bankIcaName: String
+
+  orderId: String
+}
+
+input StorePaymentRequestInput {
+  cardInfo: PaymentCardInput
+
+  callbackUrl: String
+
+  referenceNo: String
+}
+
+type CreateCancelRequestResult {
+  success: Boolean!
+
+  message: String
+}
+
+input CancelItemModelInput {
+  orderItemLineId: String
+
+  cancelReasonId: String
+}
+
+type CreateReturnRequestResult {
+  success: Boolean!
+
+  message: String
+
+  returnCargoFirm: String
+
+  returnCargoFirmLogoUrl: String
+
+  returnCargoCode: String
+}
+
+input ReturnItemModelInput {
+  orderItemLineId: String
+
+  returnReasonId: String
+
+  returnActionId: String
+}
+
+type AddProductReviewResult {
+  success: Boolean!
+
+  message: String
+}
+
+type ProductRecommendModelType {
+  key: String
+
+  entityType: String
+
+  entityId: String
+
+  url: String
+
+  warnings: [String]
+}
+
+type ValidationResultType {
+  isValid: Boolean!
+
+  errors: [ValidationFailureType]
+}
+
+type ShoppingCartItemModel {
+  sku: String
+
+  defaultPictureZoomEnabled: Boolean!
+
+  picture: PictureModelType
+
+  pictureModels: [PictureModelType]
+
+  options: [OptionTypeModel]
+
+  productId: String
+
+  productName: String
+
+  productPublished: Boolean!
+
+  shortDescription: String
+
+  productSeName: String
+
+  warehouseId: String
+
+  warehouseName: String
+
+  unitPriceWithoutDiscount: String
+
+  unitPriceWithoutDiscountValue: Decimal!
+
+  firstPrice: String
+
+  priceVatExcluded: Decimal!
+
+  firstPriceValue: Decimal!
+
+  unitPrice: String
+
+  discountRate: Int
+
+  discountRateText: String
+
+  unitPriceValue: Decimal!
+
+  subTotal: String
+
+  discount: String
+
+  discountedQty: Int!
+
+  discounts: [String]
+
+  quantity: Int!
+
+  allowedQuantities: [SelectListItem]
+
+  attributeInfo: String
+
+  recurringInfo: String
+
+  allowItemEditing: Boolean!
+
+  disableRemoval: Boolean!
+
+  reservationInfo: String
+
+  auctionInfo: String
+
+  parameter: String
+
+  warnings: [String]
+
+  optionCode: String
+
+  mainCode: String
+
+  isGiftPackage: Boolean!
+
+  values: [ProductAttributeModelType]
+
+  specificationAttributeModels: [ProductSpecificationModelType]
+
+  id: String
+
+  breadcrumb: ProductBreadcrumbModelType
+
+  selectedAttributes: [ProductAttributeValue]
+
+  subTotalWithDiscountValue: Decimal!
+
+  subTotalWithDiscount: String
+
+  appliedDiscounts: [OrderTotalDiscountItemType]
+
+  customerFavoriteGroupId: String
+
+  stockOut: Boolean!
+}
+
+type CheckoutAttributeModel {
+  name: String
+
+  defaultValue: String
+
+  textPrompt: String
+
+  isRequired: Boolean!
+
+  selectedDay: Int
+
+  selectedMonth: Int
+
+  selectedYear: Int
+
+  allowedFileExtensions: [String]
+
+  attributeControlType: AttributeControlType!
+
+  values: [CheckoutAttributeValueModel]
+
+  id: String
+}
+
+type DiscountBoxModel {
+  appliedDiscountsWithCodes: [DiscountInfoModel]
+
+  display: Boolean!
+
+  message: String
+
+  isApplied: Boolean!
+}
+
+type GiftCardBoxModel {
+  display: Boolean!
+
+  message: String
+
+  isApplied: Boolean!
+}
+
+type GiftPackaggeBoxModel {
+  display: Boolean!
+
+  message: String
+
+  isApplied: Boolean!
+
+  note: String
+}
+
+type LoyaltyCardBoxModel {
+  display: Boolean!
+
+  messageType: LoyaltyMessageType!
+
+  message: String
+
+  isApplied: Boolean!
+
+  errorMessage: String
+
+  errorMessageLink: String
+
+  otpQueueId: String
+}
+
+type OrderReviewDataModel {
+  display: Boolean!
+
+  billingAddress: AddressType
+
+  isShippable: Boolean!
+
+  shippingAddress: AddressType
+
+  selectedPickUpInStore: Boolean!
+
+  pickupAddress: AddressType
+
+  shippingMethod: String
+
+  shippingAdditionDescription: String
+
+  paymentMethod: String
+
+  selectedPickupPointId: String
+
+  selectedPickupPointCityId: String
+}
+
+type OrderTotalsModelType {
+  isEditable: Boolean!
+
+  subTotal: String
+
+  subTotalDiscount: String
+
+  shipping: String
+
+  requiresShipping: Boolean!
+
+  selectedShippingMethod: String
+
+  paymentMethodAdditionalFee: String
+
+  tax: String
+
+  taxRates: [TaxRate]
+
+  displayTax: Boolean!
+
+  displayTaxRates: Boolean!
+
+  giftCards: [GiftCardModelType]
+
+  loyaltyCards: [LoyaltyCardModelType]
+
+  orderTotalDiscountValue: String
+
+  orderTotalDiscount: String
+
+  redeemedRewardPoints: Int!
+
+  redeemedRewardPointsAmount: String
+
+  willEarnRewardPoints: Int!
+
+  orderTotalValue: Decimal!
+
+  orderTotal: String
+
+  firtTotalValue: Decimal!
+
+  firtTotal: String
+
+  productTotalValue: Decimal!
+
+  productTotal: String
+
+  firtTotalDiscountValue: Decimal!
+
+  firtTotalDiscount: String
+
+  appliedDiscounts: [OrderTotalDiscountItemType]
+}
+
+type SubscriptionBoxModel {
+  display: Boolean!
+
+  message: String
+
+  isApplied: Boolean!
+
+  period: [SelectListItem]
+}
+
+type GenericAttribute {
+  key: String
+
+  value: String
+
+  storeId: String
+}
+
+enum GiftCardType {
+  VIRTUAL
+
+  PHYSICAL
+
+  REWARD_POINT
+}
+
+type PictureModelType {
+  imageUrl: String
+
+  thumbImageUrl: String
+
+  fullSizeImageUrl: String
+
+  title: String
+
+  id: String
+
+  type: String
+
+  videoUrl: String
+}
+
+type VendorBriefInfoModel {
+  id: String
+
+  name: String
+
+  seName: String
+}
+
+type ProductPriceModelType {
+  currencyCode: String
+
+  oldPrice: String
+
+  oldPriceValue: Decimal!
+
+  catalogPrice: String
+
+  price: String
+
+  discountRate: Int
+
+  discountRateText: String
+
+  priceWithDiscount: String
+
+  priceValue: Decimal!
+
+  freeShipping: Boolean!
+
+  customerEntersPrice: Boolean!
+
+  callForPrice: Boolean!
+
+  productId: String
+
+  hidePrices: Boolean!
+
+  isReservation: Boolean!
+
+  reservationPrice: String
+
+  isAuction: Boolean!
+
+  highestBid: String
+
+  highestBidValue: Decimal!
+
+  startPrice: String
+
+  startPriceValue: Decimal!
+
+  disableBuyButton: Boolean!
+
+  displayTaxShippingInfo: Boolean!
+
+  basePricePAngV: String
+
+  appliedDiscounts: [AppliedDiscountType]
+
+  preferredTierPrice: TierPriceType
+
+  otherPrices: [OtherPrice]
+}
+
+type ProductBreadcrumbModelType {
+  categoryBreadcrumb: [CategorySimpleModelType]
+}
+
+type ProductTagModelType {
+  id: String
+
+  name: String
+
+  seName: String
+
+  productCount: Int!
+}
+
+type ProductAttributeModelType {
+  productId: String
+
+  productAttributeId: String
+
+  name: String
+
+  description: String
+
+  textPrompt: String
+
+  isRequired: Boolean!
+
+  defaultValue: String
+
+  selectedDay: Int
+
+  selectedMonth: Int
+
+  selectedYear: Int
+
+  hasCondition: Boolean!
+
+  allowedFileExtensions: [String]
+
+  attributeControlType: String
+
+  values: [ProductAttributeValueModelType]
+
+  id: String
+}
+
+type ProductSpecificationModelType {
+  specificationAttributeId: String
+
+  specificationAttributeName: String
+
+  valueRaw: String
+
+  colorSquaresRgb: String
+
+  specificationAttributeOptionId: String
+
+  allowFiltering: Boolean!
+
+  displayOrder: Int!
+
+  id: String
+
+  genericAttributes: [GenericAttribute]
+
+  icon: String
+
+  iconText: String
+
+  showOnDescription: Boolean!
+
+  isComparable: Boolean!
+
+  isSearchable: Boolean!
+
+  specificationAttributeDetail: SpecificationAttributeDetail
+
+  specificationAttributeOptionDetail: SpecificationAttributeOptionDetail
+}
+
+type ProductReviewOverviewModelType {
+  ratingSum: Int!
+
+  totalReviews: Int!
+
+  allowCustomerReviews: Boolean!
+}
+
+type TierPriceModelType {
+  price: String
+
+  quantity: Int!
+}
+
+type AddToCartModelType {
+  productId: String
+
+  enteredQuantity: Int!
+
+  minimumQuantityNotification: String
+
+  allowedQuantities: [SelectListItem]
+
+  customerEntersPrice: Boolean!
+
+  customerEnteredPrice: Decimal!
+
+  customerEnteredPriceRange: String
+
+  disableBuyButton: Boolean!
+
+  disableWishlistButton: Boolean!
+
+  isReservation: Boolean!
+
+  isAuction: Boolean!
+
+  measureUnit: String
+
+  availableForPreOrder: Boolean!
+
+  preOrderAvailabilityStartDateTimeUtc: DateTime
+
+  updatedShoppingCartItemId: String
+
+  updateShoppingCartItemType: String
+}
+
+type ProductBundleModelType {
+  id: String
+
+  productId: String
+
+  name: String
+
+  seName: String
+
+  shortDescription: String
+
+  sku: String
+
+  mpn: String
+
+  gtin: String
+
+  quantity: Int!
+
+  price: String
+
+  priceValue: Decimal!
+
+  defaultPictureModel: PictureModelType
+
+  genericAttributes: [GenericAttribute]
+}
+
+type ManufacturerModelType {
+  name: String
+
+  description: String
+
+  metaKeywords: String
+
+  metaDescription: String
+
+  metaTitle: String
+
+  seName: String
+
+  icon: String
+
+  pictureModel: PictureModelType
+
+  pagingFilteringContext: CatalogPagingFilteringType
+
+  featuredProducts: [ProductOverviewType]
+
+  products: [ProductOverviewType]
+
+  id: String
+
+  genericAttributes: [GenericAttribute]
+}
+
+type OptionTypeModel {
+  productOptionId: String
+
+  productSpecifications: [ProductSpecificationModelType]
+
+  productDetails: ProductSmallDetailType
+}
+
+type ProductRewardModel {
+  segment: String
+
+  rewardPoint: Float!
+
+  multiplier: Int!
+
+  maxMaxUseValue: Int!
+}
+
+type ProductSlicerModelType {
+  variants: [ProductSlicerOptionDetailModelType]
+}
+
+type ElasticDynamicEntities {
+  entityId: Int!
+
+  entityName: String
+
+  value: String
+
+  languageId: String
+
+  localeValue: String
+}
+
+type ProductAttributesModelType {
+  id: Int!
+
+  attributeType: String
+
+  attributeId: String
+
+  attributeName: String
+
+  attributeValueId: String
+
+  attributeValueName: String
+
+  attributeNameKey: String
+
+  attributeOptionKey: String
+
+  languageId: String
+
+  jSonConfig: String
+
+  allowFiltering: Boolean!
+
+  showOnDescription: Boolean!
+}
+
+enum AttributeControlType {
+  DROPDOWN_LIST
+
+  RADIO_LIST
+
+  CHECKBOXES
+
+  TEXT_BOX
+
+  MULTILINE_TEXTBOX
+
+  DATEPICKER
+
+  FILE_UPLOAD
+
+  COLOR_SQUARES
+
+  IMAGE_SQUARES
+
+  READONLY_CHECKBOXES
+}
+
+input AddressAttributeValueModelTypeInput {
+  name: String
+
+  isPreSelected: Boolean!
+
+  id: String
+}
+
+input CustomerAttributeValueModelTypeInput {
+  name: String
+
+  isPreSelected: Boolean!
+
+  id: String
+
+  displayOrder: Int!
+}
+
+enum PermissionName {
+  ADDRESS_PERMISSION
+
+  CAN_SHARE_WITH_FOREIGN_COUNTRIES
+
+  CAN_SHARE_WITH_THIRD_PARTY
+
+  CALL_PERMISSION
+
+  EMAIL_PERMISSION
+
+  SMS_PERMISSION
+}
+
+type Installment {
+  installmentPrice: String
+
+  totalPrice: String
+
+  paymentFee: String
+
+  installmentCount: Int!
+}
+
+type PaymentCard {
+  binNumber: String
+
+  cleanCardNumber: String
+
+  cardHolderName: String
+
+  cardNumber: String
+
+  expireYear: String
+
+  expireMonth: String
+
+  cvc: String
+
+  registerCard: Int
+
+  cardAlias: String
+
+  cardToken: String
+
+  cardUserKey: String
+
+  cardNumberMasked: String
+
+  bankName: String
+
+  cardFamily: String
+
+  cardIssuer: String
+
+  cardType: String
+
+  paymentSource: String
+
+  international: Boolean!
+
+  pPKey: String
+}
+
+type BasketItem {
+  id: String
+
+  price: Decimal!
+
+  name: String
+
+  sku: String
+
+  category1: String
+
+  category2: String
+
+  itemType: String
+
+  subMerchantKey: String
+
+  subMerchantPrice: String
+
+  paymentTransactionId: String
+}
+
+type PaymentRequestAddressModelType {
+  description: String
+
+  zipCode: String
+
+  contactName: String
+
+  city: String
+
+  country: String
+
+  email: String
+
+  phone: String
+}
+
+type Buyer {
+  id: String
+
+  name: String
+
+  surname: String
+
+  identityNumber: String
+
+  email: String
+
+  gsmNumber: String
+
+  registrationDate: String
+
+  lastLoginDate: String
+
+  registrationAddress: String
+
+  city: String
+
+  country: String
+
+  zipCode: String
+
+  ip: String
+
+  passwordHash: String
+
+  orderCount: Int
+
+  orderTotal: Decimal
+
+  userAgent: String
+
+  customerSegment: String
+
+  isGuest: Boolean!
+}
+
+type PosInfoModelType {
+  posId: String
+
+  force3d: Boolean!
+
+  posName: String
+
+  paymentInfo: PaymentInfoModelType
+
+  byPassForce3d: Boolean!
+}
+
+type BankTransferInfo {
+  iBAN: String
+
+  bank: String
+
+  isPay: Boolean!
+
+  paymentDate: DateTime
+}
+
+type CargoPaymentInfo {
+  cargoProvider: String
+
+  cargoKey: String
+
+  isPay: Boolean!
+
+  paymentDate: DateTime
+
+  paymentType: String
+}
+
+type CountryAddressSchemeEntity {
+  countryAddressSchemeId: Long!
+
+  addressEntityName: String
+
+  entityTitle: String
+
+  isRequired: Boolean!
+
+  allowFreeText: Boolean!
+
+  addressEntitySortNumber: Int!
+
+  maxLength: Int!
+
+  validationRegex: String
+
+  lookUp: String
+
+  lookUpTable: String
+
+  lookUpFilter: String
+
+  countryAddressType: String
+
+  externalCodeType: String
+}
+
+type CountryAddressScheme {
+  id: Long!
+
+  countryId: Long
+
+  schemeName: String
+}
+
+type StateResponseModel {
+  id: Long!
+
+  name: String
+
+  code: String
+
+  timeZone: String
+
+  countryId: Long!
+}
+
+type CityResponseModel {
+  id: Long!
+
+  code: String
+
+  name: String
+
+  stateId: Long
+
+  countryId: Long!
+}
+
+type DistrictResponseModel {
+  id: Long!
+
+  code: String
+
+  name: String
+
+  cityId: Long
+}
+
+type NeighborhoodResponseModel {
+  id: Long!
+
+  code: String
+
+  zipCode: String
+
+  name: String
+
+  districtId: Long!
+}
+
+type StreetResponseModel {
+  id: Long!
+
+  code: String
+
+  name: String
+
+  neighbourhoodId: Long!
+}
+
+type BuildingResponseModel {
+  id: Long!
+
+  code: String
+
+  name: String
+
+  streetId: Long!
+}
+
+type Currency {
+  id: Long!
+
+  code: String
+
+  iconPath: String
+
+  name: String
+}
+
+type Continent {
+  id: Long!
+
+  name: String
+
+  code: String
+}
+
+type CountryRegion {
+  id: Long!
+
+  code: String
+
+  iconPath: String
+
+  name: String
+}
+
+type CategoryProductModelType {
+  id: String
+
+  parentCategoryId: String
+
+  name: String
+
+  description: String
+
+  metaKeywords: String
+
+  metaDescription: String
+
+  metaTitle: String
+
+  seName: String
+
+  noIndex: Boolean!
+
+  flag: String
+
+  flagStyle: String
+
+  icon: String
+
+  categoryImageLink: String
+
+  genericAttributes: [GenericAttribute]
+
+  products: [ProductOverviewType]
+
+  featuredProducts: [ProductOverviewType]
+
+  specificationFilter: FilterModel
+
+  fasedSeo: CategoryFasedSeoModelType
+
+  pagingFilteringContext: CatalogPagingFilteringType
+
+  pictureModel: PictureModelType
+
+  fasedSeoList: [CategoryFasedSeoModelType]
+
+  categoryTemplateCss: String
+
+  categoryLeftFilterSubCategoryEnabled: Boolean!
+
+  categoryLeftFilterMainSubCategoryEnabled: Boolean!
+
+  displayCategoryBreadcrumb: Boolean!
+
+  categoryBreadcrumb: [CategoryProductModelType]
+
+  subCategories: [SubCategoryModel]
+
+  faqSeo: [CategoryFaqSeoModelType]
+
+  firstItem: Int!
+
+  hasNextPage: Boolean!
+
+  hasPreviousPage: Boolean!
+
+  lastItem: Int!
+
+  pageIndex: Int!
+
+  pageNumber: Int!
+
+  pageSize: Int!
+
+  totalItems: Int!
+
+  totalPages: Int!
+}
+
+input SpecificationFilterTypeInput {
+  enabled: Boolean!
+
+  filters: [SpecificationFilterItemTypeInput]
+}
+
+input ProductSortingItemTypeInput {
+  text: String
+
+  value: Int!
+
+  selected: Boolean!
+}
+
+input PageSizeOptionTypeInput {
+  text: String
+
+  value: String
+
+  selected: Boolean!
+}
+
+input PriceRangeFilterModelTypeInput {
+  items: [PriceRangeFilterItemInput]
+
+  priceFilter: PriceRangeInput
+}
+
+type SearchProductType {
+  products: [ProductOverviewType]
+
+  specificationFilter: FilterModel
+
+  pagingFilteringContext: CatalogPagingFilteringType
+
+  warning: String
+
+  q: String
+
+  redirectCategory: Boolean!
+
+  redirectCategorySeName: String
+
+  firstItem: Int!
+
+  hasNextPage: Boolean!
+
+  hasPreviousPage: Boolean!
+
+  lastItem: Int!
+
+  pageIndex: Int!
+
+  pageNumber: Int!
+
+  pageSize: Int!
+
+  totalItems: Int!
+
+  totalPages: Int!
+}
+
+type ProductReviewModelType {
+  customerId: String
+
+  customerName: String
+
+  allowViewingProfiles: Boolean!
+
+  title: String
+
+  reviewText: String
+
+  replyText: String
+
+  signature: String
+
+  rating: Int!
+
+  customerCommentedProduct: Boolean!
+
+  sizeNumber: SizeNumberType!
+
+  comfort: ComfortType!
+
+  customerNameShow: Boolean!
+
+  helpfulness: ProductReviewHelpfulnessModelType
+
+  writtenOnStr: String
+
+  id: String
+}
+
+type AddProductReviewModelType {
+  title: String
+
+  reviewText: String
+
+  rating: Int!
+
+  sizeNumber: SizeNumberType!
+
+  comfort: ComfortType!
+
+  customerNameShow: Boolean
+
+  customerCommentedProduct: Boolean
+
+  displayCaptcha: Boolean
+
+  canCurrentCustomerLeaveReview: Boolean
+
+  successfullyAdded: Boolean
+
+  result: String
+}
+
+type ProductStoreDistanceModel {
+  itemCode: String
+
+  stores: [ProductStoreDistanceStockModel]
+}
+
+type QuickSearchProductCategory {
+  id: String
+
+  parentCategoryId: String
+
+  title: String
+
+  seName: String
+
+  popularity: Int!
+
+  keywords: [String]
+
+  companyId: String
+
+  siteId: String
+
+  clientId: String
+
+  catalogId: String
+
+  languageId: String
+}
+
+type QuickSearchProduct {
+  id: String
+
+  sku: String
+
+  seName: String
+
+  name: String
+
+  shortDescription: String
+
+  description: String
+
+  stock: Int!
+
+  listPrice: Decimal!
+
+  price: Decimal!
+
+  pictures: [String]
+
+  categories: [QuickSearchProductCategory]
+
+  attributes: [ProductSpecificationAttributes]
+
+  productDiscounts: [ProductDiscountModel]
+
+  popularity: Int!
+
+  keywords: [String]
+
+  companyId: String
+
+  siteId: String
+
+  clientId: String
+
+  catalogId: String
+
+  languageId: String
+}
+
+type CatalogPagingFilteringType {
+  specificationFilter: SpecificationFilterType
+
+  orderBy: Int
+
+  allowProductSorting: Boolean
+
+  availableSortOptions: [ProductSortingItemType]
+
+  pageNumber: Int
+
+  allowCustomersToSelectPageSize: Boolean
+
+  pageSize: Int
+
+  totalItems: Int
+
+  totalPages: Int
+
+  pageSizeOptions: [PageSizeOptionType]
+
+  priceRangeFilter: PriceRangeFilterModelType
+
+  selectedSpecFilter: [String]
+
+  firstItem: Int
+
+  hasNextPage: Boolean
+
+  hasPreviousPage: Boolean
+
+  lastItem: Int
+
+  pagePath: String
+
+  prepareSpecsFilters: Boolean
+}
+
+type SubCategoryModelType {
+  id: String
+
+  name: String
+
+  seName: String
+
+  description: String
+
+  flag: String
+
+  flagStyle: String
+
+  pictureModel: PictureModelType
+}
+
+type ProductOverviewType {
+  id: String
+
+  name: String
+
+  shortDescription: String
+
+  fullDescription: String
+
+  metaDescription: String
+
+  metaTitle: String
+
+  seName: String
+
+  productType: ProductType!
+
+  sku: String
+
+  mainCode: String
+
+  inWishList: Boolean!
+
+  genericAttributes: [GenericAttribute] @deprecated(reason: "Not Supported")
+
+  size: ProductSizeModel @deprecated(reason: "Use ProductSlicers")
+
+  categories: [CategorySimpleModel]
+
+  createdOnUtc: DateTime
+
+  price: ProductPriceModel
+
+  defaultPictureModel: PictureModelType
+
+  pictures: [PictureModelType]
+
+  attributes: [ProductAttributesModelType]
+
+  specificationAttributeModels: [ProductSpecificationModelType]
+
+  reviewOverviewModel: ProductReviewOverviewModelType
+
+  breadcrumb: ProductBreadcrumbModelType
+
+  catalogIds: [String]
+
+  productSlicers: ProductSlicerModelType
+
+  productRewards: [ProductRewardModel]
+
+  dynamicEntities: [ElasticDynamicEntities]
+}
+
+type CategoryFaqSeoModelType {
+  id: String
+
+  genericAttributes: [GenericAttribute]
+
+  categoryId: String
+
+  question: String
+
+  answer: String
+
+  order: Int
+}
+
+type CategoryFasedSeoModelType {
+  id: String
+
+  categoryId: String
+
+  metaDescription: String
+
+  metaTitle: String
+
+  description: String
+
+  seName: String
+
+  canonicalUrl: String
+
+  name: String
+
+  noIndex: Boolean!
+
+  noFollow: Boolean!
+
+  siteMap: Boolean!
+
+  createdOnUtc: DateTime!
+
+  aLink: Boolean!
+
+  genericAttributes: [GenericAttribute]
+}
+
+type AddressAttributeModelType {
+  name: String
+
+  isRequired: Boolean!
+
+  defaultValue: String
+
+  attributeControlType: AttributeControlType!
+
+  values: [AddressAttributeValueModelType]
+
+  id: String
+}
+
+type CustomerPreferenceHistoryModel {
+  type: ContractType!
+
+  id: String
+
+  permission: [Permissions]
+
+  genericAttributes: [GenericAttribute]
+}
+
+type AssociatedExternalAuthModelType {
+  email: String
+
+  externalIdentifier: String
+
+  authMethodName: String
+
+  id: String
+}
+
+type CustomerAttributeModelType {
+  name: String
+
+  isRequired: Boolean!
+
+  customerCanEdit: Boolean!
+
+  showOnUserInfoPage: Boolean!
+
+  showOnRegisterPage: Boolean!
+
+  isMultiSelect: Boolean!
+
+  defaultValue: String
+
+  attributeControlType: AttributeControlType!
+
+  values: [CustomerAttributeValueModelType]
+
+  id: String
+
+  displayOrder: Int!
+}
+
+type NewsletterSimpleCategoryType {
+  id: String
+
+  name: String
+
+  description: String
+
+  selected: Boolean!
+}
+
+type InterestedTypeOption {
+  id: String
+
+  name: String
+
+  code: String
+
+  values: String
+}
+
+type DiscountCouponModelType {
+  id: String
+
+  couponCode: String
+
+  used: Boolean!
+
+  createdOnUtc: DateTime!
+
+  startDateUtc: DateTime
+
+  endDateUtc: DateTime
+
+  discountPercentage: Decimal!
+
+  discountAmount: Decimal!
+
+  description: String
+}
+
+type SuggestEarnModelType {
+  suggestEarnEnabled: Boolean!
+
+  acceptTheTerms: Boolean!
+
+  referenceCode: String
+
+  codeValidityDate: DateTime!
+
+  tenancy: Int!
+
+  totalTenancy: Int!
+
+  tenancyFullText: String
+
+  resources: [SuggestEarnResourceType]
+}
+
+type CustomerSegmentRole {
+  roleId: String
+
+  roleName: String
+}
+
+type CustomerOrderOrderDetailsModel {
+  orderTotal: String
+
+  isReturnRequestAllowed: Boolean!
+
+  pickUpInStore: Boolean!
+
+  orderStatus: String
+
+  paymentStatus: String
+
+  shippingStatus: String
+
+  createdOn: DateTime!
+
+  orderDate: String
+
+  orderNumber: Int!
+
+  checkoutAttributes: [CheckoutAttributeValue]
+
+  id: String
+
+  orderStatusEnum: OrderStatus!
+
+  orderTypeEnum: OrderPlacedType!
+
+  storeName: String
+
+  channel: String
+
+  itemCount: Int!
+
+  items: [OrderItemModel]
+}
+
+type RecurringOrderModel {
+  startDate: String
+
+  cycleInfo: String
+
+  nextPayment: String
+
+  totalCycles: Int!
+
+  cyclesRemaining: Int!
+
+  initialOrderId: String
+
+  canCancel: Boolean!
+
+  id: String
+}
+
+enum OrderPlacedType {
+  WEB_SHOP
+
+  APP
+
+  IN_STORE
+}
+
+type ShipmentBriefModel {
+  trackingNumber: String
+
+  shipmentNumber: Int!
+
+  shippedDate: DateTime
+
+  deliveryDate: DateTime
+
+  id: String
+
+  cargoFirm: String
+}
+
+type KeyValuePairOfStringAndString {
+  key: String!
+
+  value: String!
+}
+
+type OrderDetailTaxRate {
+  rate: String
+
+  value: String
+}
+
+type OrderDetailGiftCardType {
+  couponCode: String
+
+  amount: String
+
+  point: String
+
+  giftCardType: GiftCardType!
+}
+
+type OrderDetailDiscountType {
+  discountName: String
+
+  discountId: String
+
+  amount: String
+}
+
+type OrderNote {
+  hasDownload: Boolean!
+
+  note: String
+
+  createdOn: DateTime!
+
+  orderId: String
+
+  id: String
+}
+
+type OrderItemModel {
+  orderItemGuid: UUID!
+
+  sku: String
+
+  gtin: String
+
+  productId: String
+
+  productName: String
+
+  productSeName: String
+
+  picture: PictureModelType
+
+  unitPrice: String
+
+  unitPriceValue: Decimal!
+
+  unitPriceWithoutDiscount: String
+
+  unitPriceWithoutDiscountValue: Decimal!
+
+  subTotal: String
+
+  discount: String
+
+  quantity: Int!
+
+  attributeInfo: String
+
+  rentalInfo: String
+
+  isGiftPackage: Boolean!
+
+  rewardEarningPoint: Float!
+
+  downloadId: String
+
+  licenseId: String
+
+  status: String
+
+  statusDescription: String
+
+  genericAttributes: [GenericAttribute]
+
+  id: String
+
+  lineDiscount: Float!
+
+  firtPrice: Float!
+
+  optionCode: String
+
+  category: String
+
+  cargoTrackingUrl: String
+
+  userCanPartialCancel: Boolean!
+
+  userCanPartialReturn: Boolean!
+
+  availableReturnActions: [ReturnRequestActionModel]
+
+  availableReturnReasons: [ReturnRequestReasonModel]
+
+  availableCancelReasons: [CancelRequestReasonModel]
+
+  orderItemLineId: String
+
+  cancelRequest: OrderItemLineCancelRequest
+
+  returnRequest: OrderItemLineReturnRequest
+
+  serviceRequest: ServiceRequest
+
+  returnTrackingUrl: String
+
+  erpInvoiceLink: String
+
+  erpInvoiceLineId: String
+}
+
+type ShipmentType {
+  id: String
+
+  shipmentNumber: Int
+
+  shippedDate: String
+
+  deliveryDate: String
+
+  estimatedDeliveryDate: String
+
+  cargoFirm: String
+
+  cargoFirmLogoUrl: String
+
+  cargoTrackingNumber: String
+
+  cargoTrackingUrl: String
+
+  invoiceUrl: String
+
+  status: String
+
+  statusDescription: String
+
+  items: [OrderItemModel]
+}
+
+type LoginRegisterActivePluginMethod {
+  type: ActivePluginType!
+
+  name: String
+
+  params: String
+}
+
+enum LoginCheckResultTypeEnum {
+  ERROR
+
+  SUCCESSFUL_LOGIN_PASSWORD
+
+  SUCCESSFULL_SEND_OTP_EMAIL
+
+  SUCCESSFULL_SEND_OTP_SMS
+
+  SUCCESSFULL_SEND_OTP_CALL
+
+  CUSTOMER_NOT_EXIST
+
+  DELETED
+
+  NOT_ACTIVE
+
+  NOT_REGISTERED
+
+  LOCKED_OUT
+
+  ERROR_PASSWORD_NOT_SET
+
+  SUCCESSFULL_SEND_OTP_SMS_GUEST
+
+  SUCCESSFULL_SEND_OTP_SMS_STAGING
+}
+
+type EasyLoginRegisterOTPModel {
+  verificationCode: String
+
+  otpValue: String
+
+  otpQueueId: String
+
+  refCode: String
+
+  verificationCodeRenewalPeriod: Long
+
+  verificationCodeCharacterLength: Int
+
+  returnUrl: String
+
+  externalId: String
+
+  continueWithPassword: Boolean!
+}
+
+enum LoginTypeEnum {
+  NULL
+
+  EMAIL
+
+  PHONE
+
+  USER_NAME
+}
+
+enum RegisterCheckResultTypeEnum {
+  ERROR
+
+  SUCCESSFULL_OTP_ERROR_IS_REGISTERED
+
+  SUCCESSFULL_SEND_OTP_EMAIL
+
+  SUCCESSFULL_SEND_OTP_SMS
+
+  SUCCESSFULL_SEND_OTP_CALL
+}
+
+type SegmentInfo {
+  segment: String
+
+  level: Int!
+
+  minPoint: Float!
+
+  maxPoint: Float!
+}
+
+type LastSegment {
+  remainingPoint: Float!
+
+  segment: String
+
+  level: Int!
+
+  minPoint: Float!
+
+  maxPoint: Float!
+}
+
+type ProductPointMinify {
+  productId: String
+
+  productName: String
+
+  price: Float!
+
+  oldPrice: Float!
+
+  quantity: Int!
+
+  segmentInfo: [ProductPointSegmentMinify]
+}
+
+type ProductPointSegmentMinify {
+  segment: String
+
+  maxUsePoint: Float!
+
+  point: Float!
+}
+
+type ProductRewardResource {
+  key: String
+
+  value: String
+}
+
+type OrderDetailsLoyaltyModel {
+  orderTotal: String
+
+  isReturnRequestAllowed: Boolean!
+
+  orderStatusEnum: OrderStatus!
+
+  orderStatus: String
+
+  paymentStatus: String
+
+  shippingStatus: String
+
+  createdOn: DateTime!
+
+  orderNumber: Int!
+
+  items: [OrderDetailItemLoyaltyModel]
+
+  checkoutAttributes: [CheckoutAttributeValue]
+
+  loyaltyOrders: [CustomerPointHistory]
+
+  loyaltyOrderInfoCount: Int!
+
+  id: String
+
+  genericAttributes: [GenericAttribute]
+}
+
+type LoyaltyCheckSettings {
+  result: Boolean!
+
+  settingType: LoyaltyCheckSettingType!
+}
+
+type MembershipAgreementModel {
+  id: String
+
+  genericAttributes: [GenericAttribute]
+
+  systemName: String
+
+  title: String
+
+  body: String
+
+  forceType: String
+
+  forceDate: DateTime
+
+  required: Boolean!
+
+  version: Float!
+}
+
+type LoyaltyOTPOption {
+  otpSynced: Boolean!
+}
+
+type LoyaltyCheckOTPModel {
+  verificationCodeRenewalPeriod: Long!
+
+  verificationCodeCharacterLength: Int!
+}
+
+type PictureModel {
+  imageUrl: String
+
+  thumbImageUrl: String
+
+  fullSizeImageUrl: String
+
+  title: String
+
+  alternateText: String
+
+  type: String
+
+  videoUrl: String
+
+  id: String
+
+  genericAttributes: [GenericAttribute]
+}
+
+type SuggestEarnResource {
+  key: String
+
+  value: String
+}
+
+type SuggestEarnTransactionModel {
+  earnStatus: SuggestEarnStatus!
+
+  earnStatusText: String
+
+  earnStatusLangText: String
+
+  realizationStatus: SuggestEarnRealizationStatus!
+
+  realizationStatusText: String
+
+  realizationStatusLangText: String
+
+  realizationStatusColorCode: String
+
+  customerId: String
+
+  createdDate: DateTime!
+
+  firstValidDate: DateTime!
+
+  lastValidDate: DateTime!
+
+  realizationEarningStatusLangText: String
+
+  realizationEarningStatusColorCode: String
+}
+
+type OurStoreImage {
+  imageName: String
+
+  orderNo: Int!
+
+  id: String
+}
+
+scalar UUID
+
+type InstallmentPrice {
+  price: Decimal!
+
+  totalPrice: Decimal!
+
+  paymentFee: Decimal!
+
+  priceText: String
+
+  totalPriceText: String
+
+  paymentFeeText: String
+
+  installmentNumber: Int!
+}
+
+type PersonalizedProcessingItem {
+  key: String
+
+  name: String
+}
+
+type Address {
+  genericAttributeValue(key: String): String
+
+  customerId: String
+
+  firstName: String
+
+  lastName: String
+
+  email: String
+
+  company: String
+
+  vatNumber: String
+
+  countryId: String
+
+  countryName: String
+
+  stateId: String
+
+  state: String
+
+  streetName: String
+
+  province: String
+
+  stateProvinceId: String
+
+  stateProvince: String
+
+  cityId: String
+
+  city: String
+
+  region: String
+
+  neighborhoodId: String
+
+  neighborhood: String
+
+  address1: String
+
+  address2: String
+
+  zipPostalCode: String
+
+  phoneNumber: String
+
+  faxNumber: String
+
+  customAttributes: String
+
+  isValid: Boolean
+
+  formattedAddress: String
+
+  externalAddressCode: String
+
+  createdOnUtc: DateTime!
+
+  taxOfficeId: String
+
+  neighborhoodCode: String
+
+  externalNeighborhoodCode: String
+
+  cityCode: String
+
+  externalCityCode: String
+
+  districtCode: String
+
+  externalDistrictCode: String
+
+  streetCode: String
+
+  externalStreetCode: String
+
+  buildingCode: String
+
+  externalBuildingCode: String
+
+  stateCode: String
+
+  externalStateCode: String
+
+  countryCode: String
+
+  provinceId: String
+
+  streetNameId: String
+
+  genericAttributes: [GenericAttribute]
+
+  id: String
+}
+
+enum ContentDisplayType {
+  HTML
+
+  BANNER
+}
+
+type ContentItem {
+  tagId: String
+
+  position: Int!
+
+  name: String
+
+  uRL: String
+
+  creative: String
+
+  alternateText: String
+
+  customPhoto1: String
+
+  customPhoto2: String
+
+  customPhoto3: String
+
+  customField1: String
+
+  customField2: String
+
+  customField3: String
+
+  customField4: String
+
+  customField5: String
+
+  customField6: String
+
+  customField7: String
+
+  customField8: String
+
+  customField9: String
+
+  customField10: String
+
+  customVideo1: String
+}
+
+type LocalizedProperty {
+  languageId: String
+
+  localeKey: String
+
+  localeValue: String
+
+  id: String
+}
+
+type MenuItemVariableValueModel {
+  id: Int!
+
+  name: String
+
+  type: String
+
+  value: String
+}
+
+type ContractContent {
+  genericAttributeValue(key: String): String
+
+  name: String
+
+  hTML: String
+
+  widgetZone: String
+
+  published: Boolean!
+
+  displayOrder: Int!
+
+  limitedToStores: Boolean!
+
+  stores: [String]
+
+  locales: [LocalizedProperty]
+
+  genericAttributes: [GenericAttribute]
+
+  id: String
+}
+
+type LayoutItem {
+  type: String
+
+  imageUrl: String
+
+  firstClickAction: String
+
+  firstButtonText: String
+
+  secondClickAction: String
+
+  secondButtonText: String
+
+  isVisible: Boolean!
+
+  cells: [LayoutCell]
+
+  section: String
+
+  sortNumber: Int!
+
+  id: String
+}
+
+type Topic {
+  genericAttributeValue(key: String): String
+
+  systemName: String
+
+  seName: String
+
+  includeInSitemap: Boolean!
+
+  includeInTopMenu: Boolean!
+
+  includeInFooterRow1: Boolean!
+
+  includeInFooterRow2: Boolean!
+
+  includeInFooterRow3: Boolean!
+
+  displayOrder: Int!
+
+  accessibleWhenStoreClosed: Boolean!
+
+  isPasswordProtected: Boolean!
+
+  password: String
+
+  title: String
+
+  body: String
+
+  topicTemplateId: String
+
+  metaKeywords: String
+
+  metaDescription: String
+
+  metaTitle: String
+
+  limitedToStores: Boolean!
+
+  stores: [String]
+
+  locales: [LocalizedProperty]
+
+  subjectToAcl: Boolean!
+
+  customerRoles: [String]
+
+  published: Boolean!
+
+  version: Decimal!
+
+  type: String
+
+  forceType: String
+
+  forceDate: DateTime
+
+  required: Boolean!
+
+  customerRewardSegment: String
+
+  rawHtml: Boolean!
+
+  genericAttributes: [GenericAttribute]
+
+  id: String
+}
+
+enum AddressUpsertResultStatus {
+  SUCCESS
+
+  FAIL
+}
+
+type OTPModel {
+  verificationCode: String
+
+  otpValue: String
+
+  otpQueueId: String
+
+  refCode: String
+
+  verificationCodeRenewalPeriod: Long
+
+  verificationCodeCharacterLength: Int
+
+  returnUrl: String
+
+  externalId: String
+}
+
+type LoyaltyParticipationResultModel {
+  result: Boolean!
+
+  resultType: LoyaltyParticipationResultType!
+
+  errors: [String]
+}
+
+input PaymentCardInput {
+  cardHolderName: String
+
+  cardNumber: String
+
+  expireYear: String
+
+  expireMonth: String
+
+  cvc: String
+
+  registerCard: Int
+
+  cardAlias: String
+
+  cardToken: String
+
+  cardUserKey: String
+
+  cardNumberMasked: String
+
+  bankName: String
+
+  cardFamily: String
+
+  cardIssuer: String
+
+  cardType: String
+
+  paymentSource: String
+
+  international: Boolean!
+
+  pPKey: String
+}
+
+type ValidationFailureType {
+  errorCode: String
+
+  errorMessage: String
+
+  propertyName: String
+
+  resourceName: String
+}
+
+type ProductAttributeValue {
+  productAttributeMappingId: String
+
+  productId: String
+
+  attributeValueTypeId: Int!
+
+  associatedProductId: String
+
+  name: String
+
+  colorSquaresRgb: String
+
+  imageSquaresPictureId: String
+
+  priceAdjustment: Decimal!
+
+  weightAdjustment: Decimal!
+
+  cost: Decimal!
+
+  quantity: Int!
+
+  isPreSelected: Boolean!
+
+  displayOrder: Int!
+
+  pictureId: String
+
+  locales: [LocalizedProperty]
+
+  attributeValueType: AttributeValueType!
+
+  attributeId: String
+
+  attributeValueId: String
+
+  id: String
+}
+
+type OrderTotalDiscountItemType {
+  discountId: String
+
+  couponCode: String
+
+  discountCode: String
+
+  discountName: String
+
+  discountType: DiscountType!
+
+  qty: Int!
+
+  amountValue: Decimal!
+
+  realAmountValue: Decimal!
+
+  amount: String
+
+  realAmount: String
+}
+
+type CheckoutAttributeValueModel {
+  name: String
+
+  colorSquaresRgb: String
+
+  priceAdjustment: String
+
+  isPreSelected: Boolean!
+
+  id: String
+}
+
+type DiscountInfoModel {
+  couponCode: String
+
+  discountName: String
+
+  id: String
+}
+
+enum LoyaltyMessageType {
+  PHONE_NOT_FOUND
+
+  OTP_SEND
+
+  OTP_NOT_BE_SEND
+
+  LOYALTY_NOT_ACTIVE
+
+  LOYALTY_POINT_REQUIRED
+
+  LOYALTY_POINT_APPLIED
+
+  LOYALTY_POINT_NOT_APPLIED
+
+  LOYALTY_POINT_NOT_SUBSCRIPTION
+}
+
+type TaxRate {
+  rate: String
+
+  value: String
+}
+
+type LoyaltyCardModelType {
+  genericAttributes: [GenericAttribute]
+
+  amount: String
+
+  remaining: String
+
+  id: String
+
+  usedAmount: String
+
+  giftCardType: GiftCardType!
+}
+
+type AppliedDiscountType {
+  discountId: String
+
+  couponCode: String
+
+  isCumulative: Boolean!
+
+  discountName: String
+}
+
+type TierPriceType {
+  productId: String
+
+  storeId: String
+
+  customerRoleId: String
+
+  quantity: Int!
+
+  price: Decimal!
+
+  startDateTimeUtc: DateTime
+
+  endDateTimeUtc: DateTime
+}
+
+type OtherPrice {
+  price: Decimal!
+
+  otherPriceType: OtherPriceType!
+
+  validationRecursion: String
+
+  validationDurationUnitId: ValidationDurationUnit
+
+  validationDurationUnit: String
+
+  validationDuration: Float
+
+  validStartDate: DateTime
+
+  validEndDate: DateTime
+}
+
+type CategorySimpleModelType {
+  name: String
+
+  seName: String
+}
+
+type ProductAttributeValueModelType {
+  name: String
+
+  colorSquaresRgb: String
+
+  imageSquaresPictureModel: PictureModelType
+
+  priceAdjustment: String
+
+  priceAdjustmentValue: Decimal!
+
+  isPreSelected: Boolean!
+
+  pictureModel: PictureModelType
+
+  id: String
+
+  quantity: Int!
+}
+
+type SpecificationAttributeDetail {
+  toExtend(rule: ValidationRuleInput): SpecificationAttributeDetailExtended
+
+  attributeDataTypeId: Int!
+
+  attributeDataTypeName: String
+
+  isSystem: Boolean!
+
+  isActive: Boolean!
+
+  validationRecursion: String
+
+  validationDurationUnitId: Int
+
+  validationDurationUnit: String
+
+  validationDuration: Float
+
+  validStartDate: DateTime
+
+  validEndDate: DateTime
+
+  jsonConfig: String
+
+  id: String
+}
+
+type SpecificationAttributeOptionDetail {
+  isActive: Boolean!
+
+  validationRecursion: String
+
+  validationDurationUnitId: Int
+
+  validationDurationUnit: String
+
+  validationDuration: Float
+
+  validStartDate: DateTime
+
+  validEndDate: DateTime
+
+  jsonConfig: String
+
+  id: String
+}
+
+type ProductSmallDetailType {
+  id: String
+
+  name: String
+
+  shortDescription: String
+
+  fullDescription: String
+
+  flag: String
+
+  metaKeywords: String
+
+  metaDescription: String
+
+  metaTitle: String
+
+  seName: String
+
+  showSku: Boolean!
+
+  sku: String
+
+  mainCode: String
+
+  showManufacturerPartNumber: Boolean!
+
+  freeShippingNotificationEnabled: Boolean!
+
+  manufacturerPartNumber: String
+
+  showGtin: Boolean!
+
+  gtin: String
+
+  stockAvailability: String
+
+  genericAttributes: [GenericAttribute]
+
+  hasSampleDownload: Boolean!
+
+  displayDiscontinuedMessage: Boolean!
+
+  productRunOutOfEnabled: Boolean!
+
+  productRunOutOfNumber: Int!
+
+  displayProductInstallmentInfoEnabled: Boolean!
+
+  displayProductStoreStockEnabled: Boolean!
+
+  customerWishlist: Long!
+
+  productDetailsSpecificationIds: String
+
+  productDetailsSpecificationValues: String
+
+  productDetailsSpecificationValuesJson: String
+
+  allowToSelectWarehouse: Boolean!
+
+  isShipEnabled: Boolean!
+
+  isFreeShipping: Boolean!
+
+  deliveryDate: String
+
+  deliveryColorSquaresRgb: String
+
+  additionalShippingCharge: Decimal!
+
+  additionalShippingChargeStr: String
+
+  notReturnable: Boolean!
+
+  emailAFriendEnabled: Boolean!
+
+  askQuestionEnabled: Boolean!
+
+  askQuestionOnProduct: Boolean!
+
+  compareProductsEnabled: Boolean!
+
+  currentStoreName: String
+
+  productType: String
+
+  defaultPictureZoomEnabled: Boolean!
+
+  defaultPictureModel: PictureModelType
+
+  pictureModels: [PictureModelType]
+
+  productPrice: ProductPriceModelType
+}
+
+type ProductSlicerOptionDetailModelType {
+  isSelectable: Boolean!
+
+  inStock: Boolean!
+
+  productId: String
+
+  seName: String
+
+  sku: String
+
+  imageUrl: String
+
+  imageFullSizeUrl: String
+
+  price: String
+
+  priceValue: Decimal!
+
+  oldPrice: String
+
+  oldPriceValue: Decimal!
+
+  catalogPrices: [ProductSlicerOptionDetailCatalogPriceModelType]
+
+  varianters: [ProductSlicerOptionDetailVarianterModelType]
+
+  slicerAttributes: [ProductSlicerAttributesModelType]
+}
+
+type PaymentInfoModelType {
+  isPay: Boolean!
+
+  authCode: String
+
+  message: String
+
+  order: String
+
+  price: Decimal!
+
+  paymentCost: Decimal!
+
+  installment: Int!
+
+  type: String
+
+  resultData: String
+
+  refNumber: String
+
+  paymentId: String
+
+  bankIca: String
+
+  bankIcaName: String
+}
+
+type FilterModel {
+  enabled: Boolean!
+
+  filters: [Filter]
+
+  removeFilterUrl: String @deprecated(reason: "NotSupported")
+
+  alreadyFilteredItems: Int!
+
+  totalFilterItems: Int!
+}
+
+type SubCategoryModel {
+  name: String
+
+  seName: String
+
+  description: String
+
+  flag: String
+
+  flagStyle: String
+
+  pictureModel: PictureModelType
+
+  id: String
+
+  icon: String
+}
+
+input SpecificationFilterItemTypeInput {
+  specificationAttributeName: String
+
+  specificationAttributeNameLocalized: String
+
+  specificationAttributeOptionName: String
+
+  specificationAttributeOptionColorRgb: String
+
+  selected: Boolean!
+
+  genericAttributes: [GenericAttributeInput]
+
+  specificationAttributeId: String
+
+  specificationAttributeOptionId: String
+
+  specificationAttributeDisplayOrder: Int!
+
+  key: String
+
+  count: Long
+
+  specificationAttributeOptionDisplayOrder: Int!
+
+  specificationAttributeOptionNameIdentifier: String
+}
+
+input PriceRangeFilterItemInput {
+  from: Float
+
+  to: Float
+
+  selected: Boolean!
+
+  count: Long!
+}
+
+input PriceRangeInput {
+  from: Float
+
+  to: Float
+}
+
+type ProductReviewHelpfulnessModelType {
+  productReviewId: String
+
+  productId: String
+
+  helpfulYesTotal: Int!
+
+  helpfulNoTotal: Int!
+}
+
+type ProductStoreDistanceStockModel {
+  inventoryQty: Int!
+
+  storeCode: String
+
+  distance: Float!
+
+  storeName: String
+
+  address: String
+
+  cityName: String
+
+  warehouseCode: String
+
+  storeLatitude: Float!
+
+  storeLongtitude: Float!
+
+  districtName: String
+
+  neighborhood: String
+
+  distanceText: String
+}
+
+type ProductSpecificationAttributes {
+  id: String
+
+  name: String
+
+  value: String
+
+  hashValue: String
+}
+
+type ProductDiscountModel {
+  id: String
+
+  name: String
+
+  amount: Decimal!
+}
+
+type SpecificationFilterType {
+  enabled: Boolean!
+
+  filters: [SpecificationFilterItemType]
+}
+
+type ProductSortingItemType {
+  text: String
+
+  value: Int!
+
+  selected: Boolean!
+}
+
+type PageSizeOptionType {
+  text: String
+
+  value: String
+
+  selected: Boolean!
+}
+
+type PriceRangeFilterModelType {
+  items: [PriceRangeFilterItem]
+
+  priceFilter: PriceRange
+}
+
+enum ProductType {
+  SIMPLE_PRODUCT
+
+  GROUPED_PRODUCT
+
+  RESERVATION
+
+  BUNDLED_PRODUCT
+
+  AUCTION
+}
+
+type ProductSizeModel {
+  id: String
+
+  attributeId: String
+
+  sizes: [Size]
+}
+
+type CategorySimpleModel {
+  name: String
+
+  seName: String
+}
+
+type ProductPriceModel {
+  currency: String
+
+  oldPrice: String
+
+  oldPriceValue: Decimal!
+
+  catalogPrice: String
+
+  price: String
+
+  priceValue: Decimal!
+
+  secondPrice: String
+
+  secondPriceValue: Decimal!
+
+  appliedDiscounts: [AppliedDiscount]
+
+  catalogPrices: [ProductPriceModel]
+
+  catalogId: String
+
+  discountRate: Int
+
+  discountRateText: String
+}
+
+type AddressAttributeValueModelType {
+  name: String
+
+  isPreSelected: Boolean!
+
+  id: String
+}
+
+enum ContractType {
+  ETK
+
+  KVKK
+}
+
+type Permissions {
+  name: PermissionName!
+
+  value: Boolean!
+}
+
+type CustomerAttributeValueModelType {
+  name: String
+
+  isPreSelected: Boolean!
+
+  id: String
+
+  displayOrder: Int!
+}
+
+type SuggestEarnResourceType {
+  key: String
+
+  value: String
+}
+
+type CheckoutAttributeValue {
+  checkoutAttributeId: String
+
+  name: String
+
+  colorSquaresRgb: String
+
+  priceAdjustment: Decimal!
+
+  weightAdjustment: Decimal!
+
+  isPreSelected: Boolean!
+
+  displayOrder: Int!
+
+  locales: [LocalizedProperty]
+
+  id: String
+}
+
+type ReturnRequestActionModel {
+  name: String
+
+  id: String
+
+  genericAttributes: [GenericAttribute]
+}
+
+type ReturnRequestReasonModel {
+  name: String
+
+  id: String
+
+  genericAttributes: [GenericAttribute]
+}
+
+type CancelRequestReasonModel {
+  name: String
+
+  id: String
+
+  genericAttributes: [GenericAttribute]
+}
+
+type OrderItemLineCancelRequest {
+  requestDateTime: DateTime!
+
+  cancelReasonId: String
+
+  cancelDeclineReasonId: String
+
+  rejectDate: DateTime
+
+  customerCancelReasonId: String
+
+  id: String
+}
+
+type OrderItemLineReturnRequest {
+  requestDateTime: DateTime!
+
+  confirmed: Boolean
+
+  updatedOn: DateTime!
+
+  updatedBy: String
+
+  newProductBarcode: String
+
+  notes: String
+
+  returnActionId: String
+
+  returnReasonId: String
+
+  returnCustomerReasonId: String
+
+  customerNote: String
+
+  returnCargoFirm: String
+
+  returnCargoFirmLogoUrl: String
+
+  returnCargoCode: String
+
+  returnDeclineReason: String
+
+  id: String
+}
+
+type ServiceRequest {
+  genericAttributeValue(key: String): String
+
+  createdOn: DateTime!
+
+  serviceRequestTypeId: Byte!
+
+  serviceRequestTypes: ServiceRequestTypes!
+
+  customerId: String
+
+  customerErpCode: String
+
+  orderId: String
+
+  orderItemLineId: String
+
+  serviceRequestStatusId: Byte!
+
+  serviceRequestStatus: ServiceRequestStatus!
+
+  acceptedDate: DateTime
+
+  rejectedDate: DateTime
+
+  declineReason: String
+
+  sku: String
+
+  barcode: String
+
+  size: String
+
+  productName: String
+
+  colorCode: String
+
+  color: String
+
+  erpInvoiceNumber: String
+
+  invoiceDate: DateTime
+
+  erpInvoiceHeaderId: String
+
+  erpInvoiceLineId: String
+
+  returnCargoFirm: String
+
+  returnCargoCode: String
+
+  externalNumber: String
+
+  externalId: String
+
+  documents: [DocumentItem]
+
+  genericAttributes: [GenericAttribute]
+
+  id: String
+}
+
+enum ActivePluginType {
+  MUTATION
+
+  QUERY
+}
+
+type OrderDetailItemLoyaltyModel {
+  id: String
+
+  productId: String
+
+  productName: String
+
+  sku: String
+
+  productSeName: String
+
+  quantity: Int!
+
+  attributeInfo: String
+
+  picture: PictureModel
+}
+
+enum LoyaltyCheckSettingType {
+  MEMBERSHIP_AGGREMENT
+
+  DOWNLOAD_THE_APP
+}
+
+enum SuggestEarnStatus {
+  REGISTER
+
+  ORDER
+}
+
+enum SuggestEarnRealizationStatus {
+  PENDING
+
+  CANCELLED
+
+  COMPLETED
+}
+
+type LayoutCell {
+  title: String
+
+  imageUrl: String
+
+  clickAction: String
+
+  sortNumber: Int!
+
+  actionType: String
+
+  actionId: String
+
+  content: String
+
+  id: String
+}
+
+enum LoyaltyParticipationResultType {
+  ERROR
+
+  OTP_VIEW
+
+  SUCCESS_PARTICIPATION
+}
+
+enum AttributeValueType {
+  SIMPLE
+
+  ASSOCIATED_TO_PRODUCT
+}
+
+enum DiscountType {
+  ASSIGNED_TO_ORDER_TOTAL
+
+  ASSIGNED_TO_SKUS
+
+  ASSIGNED_TO_CATEGORIES
+
+  ASSIGNED_TO_MANUFACTURERS
+
+  ASSIGNED_TO_VENDORS
+
+  ASSIGNED_TO_SHIPPING
+
+  ASSIGNED_TO_ORDER_SUB_TOTAL
+
+  ASSIGNED_TO_ALL_PRODUCTS
+}
+
+enum OtherPriceType {
+  CAMPAIGN
+
+  PRODUCT
+}
+
+enum ValidationDurationUnit {
+  SANIYE
+
+  DAKIKA
+
+  SAAT
+
+  GUN
+
+  HAFTA
+
+  AY
+
+  YIL
+}
+
+type SpecificationAttributeDetailExtended {
+  toExtend(rule: ValidationRuleInput): SpecificationAttributeDetailExtended
+
+  validationRule: ValidationRule
+
+  attributeDataTypeId: Int!
+
+  attributeDataTypeName: String
+
+  isSystem: Boolean!
+
+  isActive: Boolean!
+
+  validationRecursion: String
+
+  validationDurationUnitId: Int
+
+  validationDurationUnit: String
+
+  validationDuration: Float
+
+  validStartDate: DateTime
+
+  validEndDate: DateTime
+
+  jsonConfig: String
+
+  id: String
+}
+
+input ValidationRuleInput {
+  isRequired: Boolean!
+
+  isUnique: Boolean!
+
+  function: String
+
+  id: String
+}
+
+type ProductSlicerOptionDetailCatalogPriceModelType {
+  catalogId: String
+
+  price: String
+
+  priceValue: Decimal!
+
+  oldPrice: String
+
+  oldPriceValue: Decimal!
+}
+
+type ProductSlicerOptionDetailVarianterModelType {
+  gtin: String
+
+  inStock: Boolean!
+
+  stock: Int!
+
+  varianterAttributes: [ProductSlicerOptionDetailVarianterAttributeModelType]
+}
+
+type ProductSlicerAttributesModelType {
+  attributeKey: String
+
+  attributeName: String
+
+  attributeValue: String
+
+  attributeType: String
+
+  order: Int!
+
+  urlChanger: Boolean!
+}
+
+type Filter {
+  attribute: FilterAttribute
+
+  attributeOptionList: [AttributeOption]
+}
+
+input GenericAttributeInput {
+  key: String
+
+  value: String
+
+  storeId: String
+}
+
+type SpecificationFilterItemType {
+  specificationAttributeName: String
+
+  specificationAttributeNameLocalized: String
+
+  specificationAttributeOptionName: String
+
+  specificationAttributeOptionColorRgb: String
+
+  selected: Boolean!
+
+  genericAttributes: [GenericAttribute]
+
+  specificationAttributeId: String
+
+  specificationAttributeOptionId: String
+
+  specificationAttributeDisplayOrder: Int!
+
+  key: String
+
+  count: Long
+
+  specificationAttributeOptionDisplayOrder: Int!
+
+  specificationAttributeOptionNameIdentifier: String
+}
+
+type PriceRangeFilterItem {
+  from: Float
+
+  to: Float
+
+  selected: Boolean!
+
+  count: Long!
+}
+
+type PriceRange {
+  from: Float
+
+  to: Float
+}
+
+type Size {
+  attributeId: String
+
+  name: String
+
+  stock: Int!
+
+  inStock: Boolean!
+
+  gtin: String
+
+  genericAttributes: [GenericAttribute]
+}
+
+type AppliedDiscount {
+  discountId: String
+
+  couponCode: String
+
+  isCumulative: Boolean!
+
+  discountName: String
+
+  discountCode: String
+
+  discountDetails: [ShoppingCartDiscount]
+}
+
+"""
+The `Byte` scalar type represents non-fractional whole numeric values. Byte can represent values between 0 and 255.
+"""
+scalar Byte
+
+enum ServiceRequestTypes {
+  PRODUCT_REVIEW
+}
+
+enum ServiceRequestStatus {
+  CREATED
+
+  ACCEPTED
+
+  REJECTED
+}
+
+type DocumentItem {
+  fileName: String
+
+  contentType: String
+
+  url: String
+
+  target: String
+
+  id: String
+}
+
+type ValidationRule {
+  isRequired: Boolean!
+
+  isUnique: Boolean!
+
+  function: String
+
+  id: String
+}
+
+type ProductSlicerOptionDetailVarianterAttributeModelType {
+  attributeName: String
+
+  attributeId: String
+
+  name: String
+}
+
+type FilterAttribute {
+  name: String
+
+  nameLocalized: String
+
+  friendlyUrl: String
+
+  order: String
+
+  selectedOptionCount: Int
+}
+
+type AttributeOption {
+  id: String
+
+  optionName: String
+
+  optionNameFriendly: String
+
+  filterUrl: String @deprecated(reason: "NotSupported")
+
+  removeFilterUrl: String @deprecated(reason: "NotSupported")
+
+  selected: Boolean!
+
+  selectedFiterUrl: String @deprecated(reason: "NotSupported")
+
+  productCount: Long!
+
+  isFaced: Boolean! @deprecated(reason: "NotSupported")
+
+  seName: String
+
+  displayOrder: Int!
+}
+
+type ShoppingCartDiscount {
+  discountId: String
+
+  discountGroupNo: Int!
+
+  amount: Decimal!
+
+  realAmount: Decimal!
+
+  qty: Int!
+
+  cartItemId: String
+
+  discountName: String
+
+  discountCode: String
+
+  couponCode: String
+
+  discountType: DiscountType!
+}
+
+"""
+Directs the executor to skip this field or fragment when the `if` argument is true.
+"""
+directive @skip ("Skipped when true." if: Boolean!) on FIELD|FRAGMENT_SPREAD|INLINE_FRAGMENT
+
+"""
+Directs the executor to include this field or fragment only when the `if` argument is true.
+"""
+directive @include ("Included when true." if: Boolean!) on FIELD|FRAGMENT_SPREAD|INLINE_FRAGMENT
+
+"""
+The `@defer` directive may be provided for fragment spreads and inline fragments to inform the executor to delay the execution of the current fragment to indicate deprioritization of the current fragment. A query with `@defer` directive will cause the request to potentially return multiple responses, where non-deferred data is delivered in the initial response and data deferred is delivered in a subsequent response. `@include` and `@skip` take precedence over `@defer`.
+"""
+directive @defer ("If this argument label has a value other than null, it will be passed on to the result of this defer directive. This label is intended to give client applications a way to identify to which fragment a deferred result belongs to." label: String, "Deferred when true." if: Boolean) on FRAGMENT_SPREAD|INLINE_FRAGMENT
+
+"""
+The `@stream` directive may be provided for a field of `List` type so that the backend can leverage technology such as asynchronous iterators to provide a partial list in the initial response, and additional list items in subsequent responses. `@include` and `@skip` take precedence over `@stream`.
+"""
+directive @stream ("If this argument label has a value other than null, it will be passed on to the result of this stream directive. This label is intended to give client applications a way to identify to which fragment a streamed result belongs to." label: String, "The initial elements that shall be send down to the consumer." initialCount: Int! = 0, "Streamed when true." if: Boolean) on FIELD
+
+"""
+The @deprecated directive is used within the type system definition language to indicate deprecated portions of a GraphQL service’s schema,such as deprecated fields on a type or deprecated enum values.
+"""
+directive @deprecated ("Deprecations include a reason for why it is deprecated, which is formatted using Markdown syntax (as specified by CommonMark)." reason: String = "No longer supported.") on FIELD_DEFINITION|ENUM_VALUE
+
+directive @authorize ("The name of the authorization policy that determines access to the annotated resource." policy: String, "Roles that are allowed to access the annotated resource." roles: [String!], "Defines when when the resolver shall be executed.By default the resolver is executed after the policy has determined that the current user is allowed to access the field." apply: ApplyPolicy! = BEFORE_RESOLVER) repeatable on SCHEMA|OBJECT|FIELD_DEFINITION
+
+"""
+The `@specifiedBy` directive is used within the type system definition language to provide a URL for specifying the behavior of custom scalar definitions.
+"""
+directive @specifiedBy ("The specifiedBy URL points to a human-readable specification. This field will only read a result for scalar types." url: String!) on SCALAR
+
+schema {
+  query: Query
+  mutation: Mutation
+}

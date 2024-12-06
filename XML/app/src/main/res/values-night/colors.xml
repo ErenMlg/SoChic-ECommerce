@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#FAFAFA</color>
+    <color name="colorGold">#F8BD83</color>
+    <color name="colorPrimaryContainer">#3C3C3C</color>
+    <color name="textColorHint">#FF888888</color>
+</resources>

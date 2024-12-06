@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/homeFragment"
+        android:layout_gravity="center"
+        android:icon="@drawable/icon_home"
+        android:title="Anasayfa" />
+
+    <item
+        android:id="@+id/categoriesFragment"
+        android:layout_gravity="center"
+        android:icon="@drawable/icon_categories"
+        android:title="Kategoriler" />
+
+    <item
+        android:id="@+id/searchFragment"
+        android:layout_gravity="center"
+        android:icon="@drawable/icon_search"
+        android:title="Arama" />
+
+    <item
+        android:id="@+id/c"
+        android:layout_gravity="center"
+        android:icon="@drawable/icon_cart"
+        android:title="Sepet" />
+
+    <item
+        android:id="@+id/ce"
+        android:layout_gravity="center"
+        android:icon="@drawable/icon_avatar"
+        android:title="Hesabım" />
+</menu>
