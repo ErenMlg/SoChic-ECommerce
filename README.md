@@ -39,6 +39,8 @@ The SoChic clone project replicates the essential features of an e-commerce plat
   <li><a href="https://developer.android.com/topic/architecture/data-layer">Repository</a>: This located in data layer that contains application data and business logic. </li>
   <li><a href="https://coil-kt.github.io/coil/compose/">Coil</a>: Coil for show pictures on network.</li>
   <li><a href="https://www.apollographql.com/docs/android/">Apollo & GraphQL:</a> Apollo GraphQL is used to consume GraphQL APIs effectively. It enables declarative data fetching and caching, reducing boilerplate while providing a strongly typed API. Apollo facilitates seamless integration of GraphQL into Android projects, enhancing flexibility and productivity when working with remote data sources.</li>
+    <li><a href="https://developer.android.com/topic/architecture/domain-layer?hl=tr">Use Case</a>: Located domain layer that sits between the UI layer and the data layer.</li>
+  <li>Custom views for the create custom editable layouts or widgets.</li>
 </ul>
 
  ## Architecture
